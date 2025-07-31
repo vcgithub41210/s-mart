@@ -12,8 +12,7 @@ const Navbar = ({ currentSection, setCurrentSection }) => {
     <nav className="navbar">
       <div className="navbar-container">
         <div className="navbar-brand">
-          <h2>S-Mart</h2>
-          <span className="brand-subtitle">Inventory Management</span>
+          <img src="smart-logo2.png" alt="S-Mart Logo" />
         </div>
         
         <ul className="navbar-menu">
