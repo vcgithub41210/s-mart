@@ -6,6 +6,12 @@ import Inventory from './components/Inventory';
 import Dashboard from './components/Dashboard';
 import Login from './components/Login';
 import Signup from './components/Signup';
+// Add this import
+import Orders from './components/Orders';
+
+// In your component rendering logic
+
+
 
 function App() {
   const [currentSection, setCurrentSection] = useState('home');
@@ -21,7 +27,9 @@ function App() {
         return <Inventory userRole={userRole} />;
       case 'dashboard':
         return <Dashboard userRole={userRole} />;
-      default:
+        case 'orders':
+        return <Orders userRole={userRole} />;
+        default:
         return <Home userRole={userRole} />;
     }
   };

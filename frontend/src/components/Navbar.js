@@ -6,6 +6,7 @@ const Navbar = ({ currentSection, setCurrentSection }) => {
   const navItems = [
     { id: 'home', label: 'Home', icon: '🏠' },
     { id: 'inventory', label: 'Inventory', icon: '📦' },
+    { id: 'orders', label: 'Orders', icon: '🛒' },
     { id: 'dashboard', label: 'Dashboard', icon: '📊' }
   ];
 
@@ -31,7 +32,7 @@ const Navbar = ({ currentSection, setCurrentSection }) => {
           ))}
         </ul>
       </div>
-    </nav>
+    </nav>  
   );
 };
 

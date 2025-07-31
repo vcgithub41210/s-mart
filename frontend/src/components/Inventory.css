@@ -1,153 +1,404 @@
+.inventory-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 0;
+}
+
 .inventory-container {
+  max-width: 100%;
+  width: 100%;
+  min-height: 100vh;
   background: white;
-  border-radius: 12px;
-  padding: 30px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  margin: 0;
 }
 
 .inventory-header {
+  background: white;
+  color: #1f2937;
+  padding: 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
-  flex-wrap: wrap;
-  gap: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid #e5e7eb;
 }
 
-.inventory-header h1 {
-  color: #333;
+.header-title h1 {
   margin: 0;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.item-count {
+  margin: 0.5rem 0 0 0;
+  opacity: 0.7;
+  font-size: 1rem;
+  color: #6b7280;
 }
 
 .inventory-controls {
   display: flex;
-  gap: 15px;
+  gap: 1.5rem;
   align-items: center;
 }
 
+.search-container {
+  position: relative;
+}
+
 .search-input {
-  padding: 10px 15px;
-  border: 2px solid #e9ecef;
-  border-radius: 8px;
-  font-size: 14px;
-  width: 250px;
-  transition: border-color 0.3s ease;
-}
-
-.search-input:focus {
-  outline: none;
-  border-color: #667eea;
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  padding: 0.75rem 1rem;
   border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-weight: 500;
-  cursor: pointer;
+  border-radius: 25px;
+  width: 300px;
+  font-size: 1rem;
+  outline: none;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
 }
 
-.btn-primary:hover {
+.search-input:focus {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
-.inventory-table-container {
-  overflow-x: auto;
+.filter-container {
+  position: relative;
+}
+
+.category-filter {
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 8px;
+  background: white;
+  font-size: 1rem;
+  cursor: pointer;
+  outline: none;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  min-width: 160px;
+}
+
+.category-filter:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.add-item-btn {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.add-item-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+}
+
+.btn-icon {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.inventory-content {
+  padding: 2rem;
+  min-height: calc(100vh - 120px);
+}
+
+.table-container {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
 }
 
 .inventory-table {
   width: 100%;
   border-collapse: collapse;
-  background: white;
+  font-size: 0.95rem;
+}
+
+.inventory-table thead {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
 }
 
 .inventory-table th {
-  background: #f8f9fa;
-  padding: 15px;
+  padding: 1.25rem 1rem;
   text-align: left;
   font-weight: 600;
-  color: #333;
-  border-bottom: 2px solid #e9ecef;
+  color: #374151;
+  border-bottom: 2px solid #e5e7eb;
+  user-select: none;
+}
+
+.sortable {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.sortable:hover {
+  background-color: #f1f5f9;
+}
+
+.actions-header {
+  text-align: center;
 }
 
 .inventory-table td {
-  padding: 15px;
-  border-bottom: 1px solid #e9ecef;
-  color: #666;
+  padding: 1rem;
+  border-bottom: 1px solid #f3f4f6;
+  vertical-align: middle;
 }
 
-.inventory-table tr:hover {
-  background: #f8f9fa;
+.inventory-table tbody tr {
+  transition: all 0.2s ease;
 }
 
-.low-stock {
-  color: #ff6b35 !important;
+.inventory-table tbody tr:hover {
+  background-color: #f8fafc;
+  transform: scale(1.01);
+}
+
+.low-stock-row {
+  background-color: #fef2f2;
+}
+
+.low-stock-row:hover {
+  background-color: #fef1f1;
+}
+
+.id-cell {
+  font-weight: 600;
+  color: #6b7280;
+  width: 80px;
+}
+
+.item-name-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.item-name {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.low-stock-badge {
+  background: #ef4444;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
 }
 
-.action-btn-small {
-  padding: 6px 12px;
+.category-badge {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.stock-cell {
+  font-weight: 600;
+}
+
+.stock-number {
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  display: inline-block;
+  min-width: 40px;
+  text-align: center;
+}
+
+.low-stock .stock-number {
+  background: #fef2f2;
+  color: #ef4444;
+  border: 1px solid #fecaca;
+}
+
+.normal-stock .stock-number {
+  background: #f0f9ff;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+}
+
+.high-stock .stock-number {
+  background: #f0fdf4;
+  color: #16a34a;
+  border: 1px solid #bbf7d0;
+}
+
+.price-cell {
+  font-weight: 600;
+  color: #059669;
+  font-size: 1.1rem;
+}
+
+.actions-cell {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  min-width: 120px;
+}
+
+.action-btn {
+  background: none;
   border: none;
-  border-radius: 4px;
-  font-size: 12px;
-  margin-right: 5px;
+  padding: 0.5rem;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  font-size: 1.2rem;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 45px;
+  height: 36px;
+  min-width: 45px;
 }
 
-.action-btn-small.edit {
-  background: #4ecdc4;
+.edit-btn {
+  background: #f0f9ff;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+}
+
+.edit-btn:hover {
+  background: #0369a1;
   color: white;
+  transform: scale(1.1);
 }
 
-.action-btn-small.delete {
-  background: #ff6b35;
+.delete-btn {
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+.delete-btn:hover {
+  background: #dc2626;
   color: white;
+  transform: scale(1.1);
 }
 
-.action-btn-small:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-}
-
-/* No items message */
 .no-items {
   text-align: center;
-  padding: 40px 20px;
-  color: #666;
-  font-style: italic;
+  padding: 4rem 2rem;
+  color: #6b7280;
+}
+
+.no-items-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.no-items h3 {
+  margin: 1rem 0 0.5rem 0;
+  color: #374151;
+  font-size: 1.5rem;
 }
 
 .no-items p {
-  margin: 0;
-  font-size: 16px;
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
 }
 
-/* Mobile Responsive */
+.btn-secondary {
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background: #e5e7eb;
+  transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .search-input {
+    width: 250px;
+  }
+}
+
 @media (max-width: 768px) {
   .inventory-header {
     flex-direction: column;
-    align-items: stretch;
+    gap: 1.5rem;
+    text-align: center;
+    border-bottom: 1px solid #e5e7eb;
   }
-  
+
   .inventory-controls {
     flex-direction: column;
+    width: 100%;
+    gap: 1rem;
   }
-  
+
   .search-input {
     width: 100%;
   }
-  
-  .inventory-table {
-    font-size: 14px;
+
+  .category-filter {
+    width: 100%;
   }
-  
+
+  .inventory-content {
+    padding: 1rem;
+  }
+
+  .table-container {
+    overflow-x: auto;
+  }
+
+  .inventory-table {
+    min-width: 700px;
+  }
+
   .inventory-table th,
   .inventory-table td {
-    padding: 10px 8px;
+    padding: 0.75rem 0.5rem;
+  }
+
+  .actions-cell {
+    flex-direction: row;
+    gap: 0.5rem;
+    justify-content: center;
+  }
+  
+  .action-btn {
+    width: 40px;
+    min-width: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-title h1 {
+    font-size: 2rem;
+  }
+
+  .item-count {
+    font-size: 0.9rem;
   }
 }

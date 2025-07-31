@@ -1,0 +1,496 @@
+.orders-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 0;
+}
+
+.orders-container {
+  max-width: 100%;
+  width: 100%;
+  min-height: 100vh;
+  background: white;
+  margin: 0;
+}
+
+.orders-header {
+  background: white;
+  color: #1f2937;
+  padding: 2rem;
+  border-bottom: 1px solid #e5e7eb;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+}
+
+.header-title {
+  flex: 1;
+  min-width: 300px;
+}
+
+.header-title h1 {
+  margin: 0;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.orders-subtitle {
+  margin: 0;
+  color: #6b7280;
+  font-size: 1.1rem;
+}
+
+.orders-stats {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  flex: 2;
+}
+
+.stat-card {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  padding: 1.25rem 1.5rem;
+  border-radius: 12px;
+  text-align: center;
+  border: 1px solid #e5e7eb;
+  transition: transform 0.2s ease;
+  min-width: 140px;
+  flex: 1;
+  max-width: 180px;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+}
+
+.stat-card.pending {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border-color: #f59e0b;
+}
+
+.stat-card.completed {
+  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+  border-color: #10b981;
+}
+
+.stat-card.revenue {
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  border-color: #3b82f6;
+}
+
+.stat-number {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+  line-height: 1;
+}
+
+.stat-label {
+  color: #6b7280;
+  font-size: 0.85rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.orders-filters {
+  padding: 1.5rem 2rem;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.filter-btn {
+  padding: 0.75rem 1.5rem;
+  border: 2px solid #e5e7eb;
+  background: white;
+  color: #6b7280;
+  border-radius: 25px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.filter-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.filter-btn.active {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: white;
+  border-color: #3b82f6;
+}
+
+.orders-content {
+  padding: 2rem;
+  min-height: 60vh;
+}
+
+.orders-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 2rem;
+}
+
+.order-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e5e7eb;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.order-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.order-card.pending::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: #f59e0b;
+}
+
+.order-card.completed::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: #10b981;
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.order-id-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.order-id {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.status-badge {
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: center;
+  width: fit-content;
+}
+
+.status-badge.pending {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fbbf24;
+}
+
+.status-badge.completed {
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #22c55e;
+}
+
+.order-date {
+  text-align: right;
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.order-date .date {
+  display: block;
+  font-weight: 600;
+  color: #374151;
+}
+
+.customer-info {
+  margin-bottom: 1.5rem;
+}
+
+.customer-info h4 {
+  margin: 0 0 0.75rem 0;
+  font-size: 1rem;
+  color: #374151;
+  font-weight: 600;
+}
+
+.customer-details p {
+  margin: 0.25rem 0;
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.order-items {
+  margin-bottom: 1.5rem;
+}
+
+.order-items h4 {
+  margin: 0 0 0.75rem 0;
+  font-size: 1rem;
+  color: #374151;
+  font-weight: 600;
+}
+
+.items-list {
+  background: #f9fafb;
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+}
+
+.item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.item-row:last-child {
+  border-bottom: none;
+}
+
+.item-name {
+  flex: 1;
+  font-weight: 500;
+  color: #374151;
+}
+
+.item-quantity {
+  margin: 0 1rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.item-price {
+  font-weight: 600;
+  color: #059669;
+}
+
+.order-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #f3f4f6;
+}
+
+.order-total {
+  font-size: 1.2rem;
+  color: #059669;
+}
+
+.complete-btn {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.complete-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.completed-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.completed-time {
+  font-size: 0.8rem;
+  color: #6b7280;
+  font-style: italic;
+}
+
+.bill-btn {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.bill-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.no-orders {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #6b7280;
+}
+
+.no-orders-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.no-orders h3 {
+  margin: 1rem 0 0.5rem 0;
+  color: #374151;
+  font-size: 1.5rem;
+}
+
+.no-orders p {
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .orders-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+
+  .header-title {
+    min-width: auto;
+  }
+
+  .orders-stats {
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+  .stat-card {
+    min-width: 120px;
+  }
+}
+
+@media (max-width: 768px) {
+  .orders-header {
+    padding: 1.5rem;
+  }
+
+  .header-title h1 {
+    font-size: 2rem;
+  }
+
+  .orders-stats {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .stat-card {
+    max-width: none;
+    min-width: auto;
+  }
+
+  .orders-filters {
+    padding: 1rem 1.5rem;
+  }
+
+  .filter-buttons {
+    justify-content: center;
+    gap: 0.75rem;
+  }
+
+  .orders-content {
+    padding: 1.5rem;
+  }
+
+  .orders-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .order-footer {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .completed-actions {
+    align-items: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .orders-header {
+    padding: 1rem;
+  }
+
+  .header-title h1 {
+    font-size: 1.8rem;
+  }
+
+  .orders-subtitle {
+    font-size: 1rem;
+  }
+
+  .stat-number {
+    font-size: 1.5rem;
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+  }
+
+  .filter-btn {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+  }
+
+  .order-card {
+    padding: 1.25rem;
+  }
+
+  .order-id {
+    font-size: 1.1rem;
+  }
+
+  .order-total {
+    font-size: 1.1rem;
+  }
+}
