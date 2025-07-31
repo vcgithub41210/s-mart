@@ -2,23 +2,15 @@ import React, { useState, useEffect } from 'react';
 import './Home.css';
 import AddProductModal from './AddProductModal';
 import PlaceOrderModal from './PlaceOrderModal';
+import productService from '../services/productService';
 
-const Home = () => {
+const Home = ({ isConnected }) => {
   const [showModal, setShowModal] = useState(false);
   const [showOrderModal, setShowOrderModal] = useState(false);
   const [lowStockItems, setLowStockItems] = useState([]);
   const [revenueType, setRevenueType] = useState('monthly');
-
-  const mockLowStockItems = [
-    { id: 1, name: 'Wireless Headphones', currentStock: 3, minStock: 10 },
-    { id: 2, name: 'USB Cables', currentStock: 5, minStock: 15 },
-    { id: 3, name: 'Phone Cases', currentStock: 2, minStock: 8 },
-    { id: 4, name: 'Laptop Chargers', currentStock: 1, minStock: 12 },
-    { id: 5, name: 'Bluetooth Speakers', currentStock: 4, minStock: 20 },
-    { id: 6, name: 'Power Banks', currentStock: 3, minStock: 15 },
-    { id: 7, name: 'Screen Protectors', currentStock: 7, minStock: 25 },
-    { id: 8, name: 'Wireless Mouse', currentStock: 2, minStock: 10 }
-  ];
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const revenueData = {
     daily: 2850,
@@ -26,29 +18,104 @@ const Home = () => {
     monthly: 75230
   };
 
-  useEffect(() => {
-    const checkLowStock = () => {
-      const lowStockData = mockLowStockItems.filter(item => item.currentStock <= item.minStock);
-      if (lowStockData.length > 0) {
-        setLowStockItems(lowStockData);
+  // Fetch low stock items from database
+  const fetchLowStockItems = async () => {
+    if (!isConnected) {
+      setError('Backend connection required');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError(null);
+      
+      // Get all products from database
+      const data = await productService.getAllProducts();
+      
+      // Handle different response structures
+      let products = [];
+      if (Array.isArray(data)) {
+        products = data;
+      } else if (data && Array.isArray(data.data)) {
+        products = data.data;
+      } else {
+        console.error('Unexpected data structure:', data);
+        setError('Invalid data format received from server');
+        return;
       }
-    };
 
-    checkLowStock();
-    const interval = setInterval(checkLowStock, 5 * 60 * 1000);
+      // Transform and filter for low stock items
+      const transformedProducts = products.map(product => ({
+        id: product._id || product.productId,
+        name: product.productName || 'Unknown Product',
+        currentStock: product.stockAvailable || 0,
+        minStock: product.lowStockThreshold || 10,
+        skuCode: product.skuCode,
+        category: product.category
+      }));
+
+      // Filter products where current stock is at or below minimum threshold
+      const lowStockData = transformedProducts.filter(item => 
+        item.currentStock <= item.minStock
+      );
+
+      // Sort by stock level (lowest stock first)
+      lowStockData.sort((a, b) => a.currentStock - b.currentStock);
+
+      setLowStockItems(lowStockData);
+      console.log('Low stock items found:', lowStockData);
+
+    } catch (err) {
+      console.error('Error fetching low stock items:', err);
+      setError('Failed to load low stock data: ' + err.message);
+      setLowStockItems([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    // Initial load
+    fetchLowStockItems();
+    
+    // Set up interval to check every 5 minutes
+    const interval = setInterval(fetchLowStockItems, 5 * 60 * 1000);
+    
     return () => clearInterval(interval);
-  }, []);
+  }, [isConnected]);
 
-  const handleAddProduct = (productData) => {
-    console.log('Product added:', productData);
-    setShowModal(false);
-    alert('Product added successfully!');
+  const handleAddProduct = async (productData) => {
+    try {
+      // Transform frontend data to match your MongoDB schema
+      const newProductData = {
+        productId: productData.skuCode || `PROD-${Date.now()}`,
+        productName: productData.productName,
+        category: productData.category,
+        stockAvailable: parseInt(productData.availableQuantity),
+        pricePerQty: parseFloat(productData.price) || 0,
+        skuCode: productData.skuCode,
+        lowStockThreshold: parseInt(productData.lowStockThreshold) || 10
+      };
+
+      await productService.createProduct(newProductData);
+      setShowModal(false);
+      alert(`Product "${productData.productName}" added successfully!`);
+      
+      // Refresh low stock data after adding new product
+      fetchLowStockItems();
+    } catch (err) {
+      alert('Failed to add product: ' + err.message);
+      console.error('Error adding product:', err);
+    }
   };
 
   const handlePlaceOrder = (orderData) => {
     console.log('Order placed:', orderData);
     setShowOrderModal(false);
     alert(`Order placed successfully!\nProduct: ${orderData.product.name}\nQuantity: ${orderData.quantity}\nTotal: ₹${orderData.totalPrice.toLocaleString('en-IN')}`);
+    
+    // Refresh low stock data after placing order (in case stock changed)
+    fetchLowStockItems();
   };
 
   const formatCurrency = (amount) => {
@@ -56,6 +123,14 @@ const Home = () => {
       style: 'currency',
       currency: 'INR'
     }).format(amount);
+  };
+
+  // Get urgency class based on stock level
+  const getUrgencyClass = (currentStock, minStock) => {
+    if (currentStock <= 5) return 'critical-stock'; // RED - Really low (0-5 items)
+    if (currentStock <= 15) return 'warning-stock'; // ORANGE - Shortage (6-15 items)  
+    if (currentStock <= 25) return 'low-stock'; // YELLOW - Little shortage (16-25 items)
+    return 'normal-stock'; // Default (shouldn't appear in low stock section)
   };
 
   return (
@@ -72,19 +147,39 @@ const Home = () => {
               <h2>Low Stock Alert</h2>
               <span className="alert-badge">{lowStockItems.length}</span>
             </div>
+
             <div className="low-stock-container">
-              {lowStockItems.length > 0 ? (
+              {!isConnected ? (
+                <div className="connection-error">
+                  <p>❌ Backend connection required to check stock levels</p>
+                </div>
+              ) : loading ? (
+                <div className="loading-state">
+                  <p>⏳ Loading stock data...</p>
+                </div>
+              ) : error ? (
+                <div className="error-state">
+                  <p>⚠️ {error}</p>
+                  <button className="retry-btn" onClick={fetchLowStockItems}>
+                    Retry
+                  </button>
+                </div>
+              ) : lowStockItems.length > 0 ? (
                 <div className="low-stock-scrollable">
                   {lowStockItems.map(item => (
-                    <div key={item.id} className="stock-item">
+                    <div 
+                      key={item.id} 
+                      className={`stock-item ${getUrgencyClass(item.currentStock, item.minStock)}`}
+                    >
                       <div className="item-info">
                         <span className="item-name">{item.name}</span>
-                        <span className="stock-level">
-                          Stock: <span className="danger">{item.currentStock}</span> / {item.minStock}
-                        </span>
+                        <span className="item-sku">SKU: {item.skuCode}</span>
+                        {item.currentStock === 0 && (
+                          <span className="out-of-stock">OUT OF STOCK</span>
+                        )}
                       </div>
-                      <div className="urgency-indicator">
-                        {item.currentStock <= 2 ? '🔴' : '🟡'}
+                      <div className="stock-count">
+                        {item.currentStock}
                       </div>
                     </div>
                   ))}

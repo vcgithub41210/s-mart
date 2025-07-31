@@ -1,96 +1,112 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Orders.css';
 import BillModal from './BillModal';
+import orderService from '../services/orderService';
 
-const Orders = () => {
+const Orders = ({ isConnected }) => {
   const [filter, setFilter] = useState('all');
   const [showBillModal, setShowBillModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [orders, setOrders] = useState([]);
+  const [stats, setStats] = useState({
+    totalOrders: 0,
+    pendingOrders: 0,
+    completedOrders: 0,
+    totalRevenue: 0
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Mock orders data - replace with API calls later
-  const [orders, setOrders] = useState([
-    {
-      id: 'ORD-001',
-      date: '2024-07-31',
-      customerName: 'John Doe',
-      customerEmail: 'john.doe@email.com',
-      customerPhone: '+91 9876543210',
-      items: [
-        { id: 1, name: 'Wireless Headphones', quantity: 2, price: 2999, total: 5998 },
-        { id: 2, name: 'USB Cables', quantity: 5, price: 299, total: 1495 }
-      ],
-      totalAmount: 7493,
-      status: 'pending',
-      orderTime: '10:30 AM'
-    },
-    {
-      id: 'ORD-002',
-      date: '2024-07-31',
-      customerName: 'Jane Smith',
-      customerEmail: 'jane.smith@email.com',
-      customerPhone: '+91 9876543211',
-      items: [
-        { id: 3, name: 'Bluetooth Speakers', quantity: 1, price: 3999, total: 3999 },
-        { id: 4, name: 'Power Banks', quantity: 2, price: 1299, total: 2598 }
-      ],
-      totalAmount: 6597,
-      status: 'completed',
-      orderTime: '11:45 AM',
-      completedTime: '12:30 PM'
-    },
-    {
-      id: 'ORD-003',
-      date: '2024-07-30',
-      customerName: 'Mike Johnson',
-      customerEmail: 'mike.johnson@email.com',
-      customerPhone: '+91 9876543212',
-      items: [
-        { id: 5, name: 'Laptop Chargers', quantity: 1, price: 1499, total: 1499 },
-        { id: 6, name: 'Wireless Mouse', quantity: 3, price: 899, total: 2697 }
-      ],
-      totalAmount: 4196,
-      status: 'pending',
-      orderTime: '2:15 PM'
-    },
-    {
-      id: 'ORD-004',
-      date: '2024-07-30',
-      customerName: 'Sarah Wilson',
-      customerEmail: 'sarah.wilson@email.com',
-      customerPhone: '+91 9876543213',
-      items: [
-        { id: 7, name: 'Phone Cases', quantity: 4, price: 599, total: 2396 },
-        { id: 8, name: 'Screen Protectors', quantity: 10, price: 199, total: 1990 }
-      ],
-      totalAmount: 4386,
-      status: 'completed',
-      orderTime: '3:20 PM',
-      completedTime: '4:00 PM'
+  // Load orders from database
+  const loadOrders = async () => {
+    if (!isConnected) {
+      setError('Backend connection required');
+      setLoading(false);
+      return;
     }
-  ]);
+
+    try {
+      setLoading(true);
+      setError(null);
+
+      const ordersData = await orderService.getAllOrders();
+      const statsData = await orderService.getOrderStats();
+
+      // Transform orders data to match frontend structure with your model
+      const transformedOrders = ordersData.map(order => ({
+        id: order._id,
+        orderId: order.orderId,
+        date: new Date(order.orderDate).toISOString().split('T')[0],
+        customerName: order.customerInfo?.name || 'N/A',
+        customerEmail: order.customerInfo?.email || 'N/A',
+        customerPhone: order.customerInfo?.phone || 'N/A',
+        items: order.items.map(item => ({
+          id: item._id,
+          name: item.productName,
+          productId: item.productId,
+          quantity: item.quantity,
+          price: item.pricePerUnit,
+          total: item.totalPrice
+        })),
+        totalAmount: order.totalAmount,
+        status: order.status,
+        orderTime: new Date(order.orderDate).toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit'
+        }),
+        completedTime: order.status === 'completed' ? 
+          new Date(order.updatedAt).toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit'
+          }) : null,
+        createdAt: order.createdAt,
+        updatedAt: order.updatedAt
+      }));
+
+      setOrders(transformedOrders);
+      setStats(statsData);
+      console.log('Orders loaded:', transformedOrders);
+    } catch (err) {
+      console.error('Error loading orders:', err);
+      setError('Failed to load orders: ' + err.message);
+      setOrders([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadOrders();
+  }, [isConnected]);
 
   const filteredOrders = orders.filter(order => {
     if (filter === 'all') return true;
     return order.status === filter;
   });
 
-  const handleCompleteOrder = (orderId) => {
+  const handleCompleteOrder = async (orderId) => {
     if (window.confirm('Are you sure you want to mark this order as completed?')) {
-      setOrders(prevOrders =>
-        prevOrders.map(order =>
-          order.id === orderId
-            ? {
-                ...order,
-                status: 'completed',
-                completedTime: new Date().toLocaleTimeString('en-US', {
-                  hour: '2-digit',
-                  minute: '2-digit'
-                })
-              }
-            : order
-        )
-      );
-      alert('Order marked as completed!');
+      try {
+        await orderService.updateOrderStatus(orderId, 'completed');
+        await loadOrders(); // Refresh orders
+        alert('Order marked as completed!');
+      } catch (err) {
+        alert('Failed to update order: ' + err.message);
+        console.error('Error updating order:', err);
+      }
+    }
+  };
+
+  const handleCancelOrder = async (orderId) => {
+    if (window.confirm('Are you sure you want to cancel this order? Stock will be restored.')) {
+      try {
+        await orderService.cancelOrder(orderId);
+        await loadOrders(); // Refresh orders
+        alert('Order cancelled successfully! Stock has been restored.');
+      } catch (err) {
+        alert('Failed to cancel order: ' + err.message);
+        console.error('Error cancelling order:', err);
+      }
     }
   };
 
@@ -115,18 +131,68 @@ const Orders = () => {
     });
   };
 
-  const getOrderStats = () => {
-    const totalOrders = orders.length;
-    const pendingOrders = orders.filter(order => order.status === 'pending').length;
-    const completedOrders = orders.filter(order => order.status === 'completed').length;
-    const totalRevenue = orders
-      .filter(order => order.status === 'completed')
-      .reduce((sum, order) => sum + order.totalAmount, 0);
+  // Show connection error if backend is down
+  if (!isConnected) {
+    return (
+      <div className="orders-page">
+        <div className="orders-container">
+          <div className="orders-header">
+            <h1>Orders Management</h1>
+          </div>
+          <div className="connection-error">
+            <div className="no-orders">
+              <div className="no-orders-icon">❌</div>
+              <h3>Cannot load orders</h3>
+              <p>Backend connection required. Please ensure your server is running on port 5000.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
-    return { totalOrders, pendingOrders, completedOrders, totalRevenue };
-  };
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="orders-page">
+        <div className="orders-container">
+          <div className="orders-header">
+            <h1>Orders Management</h1>
+          </div>
+          <div className="loading-message">
+            <div className="no-orders">
+              <div className="no-orders-icon">⏳</div>
+              <h3>Loading orders...</h3>
+              <p>Please wait while we fetch your orders.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
-  const stats = getOrderStats();
+  // Show error state
+  if (error) {
+    return (
+      <div className="orders-page">
+        <div className="orders-container">
+          <div className="orders-header">
+            <h1>Orders Management</h1>
+          </div>
+          <div className="error-state">
+            <div className="no-orders">
+              <div className="no-orders-icon">⚠️</div>
+              <h3>Error loading orders</h3>
+              <p>{error}</p>
+              <button className="retry-btn" onClick={loadOrders}>
+                Retry
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="orders-page">
@@ -177,6 +243,12 @@ const Orders = () => {
             >
               Completed ({stats.completedOrders})
             </button>
+            <button
+              className={`filter-btn ${filter === 'cancelled' ? 'active' : ''}`}
+              onClick={() => setFilter('cancelled')}
+            >
+              Cancelled ({orders.filter(o => o.status === 'cancelled').length})
+            </button>
           </div>
         </div>
 
@@ -185,7 +257,12 @@ const Orders = () => {
             <div className="no-orders">
               <div className="no-orders-icon">📋</div>
               <h3>No orders found</h3>
-              <p>No orders match your current filter criteria.</p>
+              <p>
+                {orders.length === 0 
+                  ? "No orders have been placed yet." 
+                  : "No orders match your current filter criteria."
+                }
+              </p>
             </div>
           ) : (
             <div className="orders-grid">
@@ -193,9 +270,11 @@ const Orders = () => {
                 <div key={order.id} className={`order-card ${order.status}`}>
                   <div className="order-header">
                     <div className="order-id-section">
-                      <h3 className="order-id">{order.id}</h3>
+                      <h3 className="order-id">{order.orderId}</h3>
                       <span className={`status-badge ${order.status}`}>
-                        {order.status === 'pending' ? '⏳ Pending' : '✅ Completed'}
+                        {order.status === 'pending' && '⏳ Pending'}
+                        {order.status === 'completed' && '✅ Completed'}
+                        {order.status === 'cancelled' && '❌ Cancelled'}
                       </span>
                     </div>
                     <div className="order-date">
@@ -226,33 +305,42 @@ const Orders = () => {
                     </div>
                   </div>
 
-                  <div className="order-footer">
-                    <div className="order-total">
-                      <strong>Total: {formatCurrency(order.totalAmount)}</strong>
-                    </div>
-                    <div className="order-actions">
-                      {order.status === 'pending' ? (
-                        <button
-                          className="complete-btn"
-                          onClick={() => handleCompleteOrder(order.id)}
-                        >
-                          Mark as Completed
-                        </button>
-                      ) : (
-                        <div className="completed-actions">
-                          <span className="completed-time">
-                            Completed at {order.completedTime}
-                          </span>
-                          <button
-                            className="bill-btn"
-                            onClick={() => handleGenerateBill(order)}
-                          >
-                            📄 Generate Bill
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
+                  // Replace the existing button section with this structure:
+
+<div className="order-footer">
+  <div className="order-total">
+    Total: ₹{order.totalAmount.toFixed(2)}
+  </div>
+  
+  {order.status === 'pending' && (
+    <div className="order-actions">
+      <button 
+        className="complete-btn"
+        onClick={() => handleCompleteOrder(order._id)}
+      >
+        Mark as Completed
+      </button>
+      <button 
+        className="cancel-btn"
+        onClick={() => handleCancelOrder(order._id)}
+      >
+        Cancel Order
+      </button>
+    </div>
+  )}
+  
+  {order.status === 'completed' && (
+    <div className="completed-actions">
+      <span className="completed-time">
+        Completed at {new Date(order.updatedAt).toLocaleString()}
+      </span>
+      <button className="bill-btn" onClick={() => handleGenerateBill(order._id)}>
+        📄 Generate Bill
+      </button>
+    </div>
+  )}
+</div>
+
                 </div>
               ))}
             </div>

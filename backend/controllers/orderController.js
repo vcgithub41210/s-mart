@@ -82,12 +82,7 @@ export const updateOrderStatus = async (req, res) => {
     res.status(200).json({
       success: true,
       message: 'Order status updated successfully',
-      data: {
-        orderId: order.orderId,
-        oldStatus: order.status,
-        newStatus: status,
-        updatedAt: new Date()
-      }
+      data: order
     });
   } catch (error) {
     console.error('Error updating order status:', error);
@@ -104,7 +99,7 @@ export const getAllOrders = async (req, res) => {
     const { status } = req.query;
     
     let orders;
-    if (status) {
+    if (status && status !== 'all') {
       orders = await Order.findByStatus(status);
     } else {
       orders = await Order.find().sort({ createdAt: -1 });
@@ -195,6 +190,75 @@ export const cancelOrder = async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Error cancelling order',
+      error: error.message
+    });
+  }
+};
+
+// Get order statistics
+export const getOrderStats = async (req, res) => {
+  try {
+    const totalOrders = await Order.countDocuments();
+    const pendingOrders = await Order.countDocuments({ status: 'pending' });
+    const completedOrders = await Order.countDocuments({ status: 'completed' });
+    const cancelledOrders = await Order.countDocuments({ status: 'cancelled' });
+    
+    const revenueResult = await Order.aggregate([
+      { $match: { status: 'completed' } },
+      { $group: { _id: null, totalRevenue: { $sum: '$totalAmount' } } }
+    ]);
+    
+    const totalRevenue = revenueResult.length > 0 ? revenueResult[0].totalRevenue : 0;
+
+    res.status(200).json({
+      success: true,
+      data: {
+        totalOrders,
+        pendingOrders,
+        completedOrders,
+        cancelledOrders,
+        totalRevenue
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching order stats:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching order stats',
+      error: error.message
+    });
+  }
+};
+
+// Delete order (optional - for admin purposes)
+export const deleteOrder = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+
+    const order = await Order.findOneAndDelete({ orderId });
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: 'Order not found'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Order deleted successfully',
+      data: {
+        deletedOrder: {
+          orderId: order.orderId,
+          customerName: order.customerInfo?.name
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Error deleting order:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error deleting order',
       error: error.message
     });
   }

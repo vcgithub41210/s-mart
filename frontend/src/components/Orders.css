@@ -494,3 +494,78 @@
     font-size: 1.1rem;
   }
 }
+
+/* Button Container for Vertical Arrangement */
+.order-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: stretch;
+  margin-top: 1rem;
+}
+
+/* Cancel Order Button - Red Color */
+.cancel-btn {
+  background: linear-gradient(135deg, #dc2626, #991b1b);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.cancel-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+  background: linear-gradient(135deg, #b91c1c, #7f1d1d);
+}
+
+.cancel-btn:active {
+  transform: translateY(0);
+}
+
+/* Update existing complete button for consistency */
+.complete-btn {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.complete-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.complete-btn:active {
+  transform: translateY(0);
+}
+
+/* Responsive adjustments for buttons */
+@media (max-width: 768px) {
+  .order-actions {
+    gap: 0.5rem;
+  }
+  
+  .complete-btn,
+  .cancel-btn {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .complete-btn,
+  .cancel-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+  }
+}

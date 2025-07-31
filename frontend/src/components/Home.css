@@ -95,48 +95,199 @@
   padding-right: 0.5rem;
 }
 
+/* Enhanced Stock Item with Color-coded Cards */
 .stock-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
-  margin-bottom: 0.75rem;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  border-radius: 12px;
-  transition: all 0.3s ease;
+  padding: 15px 20px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid;
 }
 
 .stock-item:hover {
-  transform: translateX(4px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  background: #fef1f1;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
+/* Critical Stock (0-5 items) - RED */
+.stock-item.critical-stock {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+  border-color: #dc3545;
+  color: white;
+}
+
+.stock-item.critical-stock .item-name {
+  color: white;
+  font-weight: 700;
+}
+
+.stock-item.critical-stock .item-sku {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.stock-item.critical-stock .stock-count {
+  color: white;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Warning Stock (6-15 items) - ORANGE */
+.stock-item.warning-stock {
+  background: linear-gradient(135deg, #ff8c42 0%, #ff7b25 100%);
+  border-color: #fd7e14;
+  color: white;
+}
+
+.stock-item.warning-stock .item-name {
+  color: white;
+  font-weight: 600;
+}
+
+.stock-item.warning-stock .item-sku {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.stock-item.warning-stock .stock-count {
+  color: white;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Low Stock (16-25 items) - YELLOW */
+.stock-item.low-stock {
+  background: linear-gradient(135deg, #ffd93d 0%, #ffcd3c 100%);
+  border-color: #ffc107;
+  color: #856404;
+}
+
+.stock-item.low-stock .item-name {
+  color: #856404;
+  font-weight: 600;
+}
+
+.stock-item.low-stock .item-sku {
+  color: #a67c00;
+}
+
+.stock-item.low-stock .stock-count {
+  color: #856404;
+  background: rgba(133, 100, 4, 0.1);
+  border: 1px solid rgba(133, 100, 4, 0.2);
+}
+
+/* Item Info Section - Left Aligned */
 .item-info {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 6px;
+  flex: 1;
+  align-items: flex-start;
+  text-align: left;
 }
 
 .item-name {
+  font-size: 1.1rem;
   font-weight: 600;
-  color: #1f2937;
-  font-size: 1rem;
+  margin-bottom: 2px;
+  line-height: 1.2;
 }
 
-.stock-level {
-  font-size: 0.875rem;
-  color: #6b7280;
+.item-sku {
+  font-size: 0.85rem;
+  font-weight: 500;
+  opacity: 0.9;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  background: rgba(0, 0, 0, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  align-self: flex-start;
 }
 
-.danger {
-  color: #ef4444;
-  font-weight: bold;
-}
-
-.urgency-indicator {
+/* Stock Count - Right Side */
+.stock-count {
   font-size: 1.4rem;
+  font-weight: 700;
+  padding: 8px 15px;
+  border-radius: 20px;
+  min-width: 50px;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+/* Out of Stock Badge */
+.out-of-stock {
+  background: rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  align-self: flex-start;
+  margin-top: 4px;
+}
+
+/* Enhanced Animation for Critical Stock */
+@keyframes urgentPulse {
+  0%, 100% { 
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); 
+  }
+  50% { 
+    box-shadow: 0 4px 16px rgba(220, 53, 69, 0.3); 
+  }
+}
+
+.stock-item.critical-stock {
+  animation: urgentPulse 2s infinite;
+}
+
+/* Status States */
+.connection-error,
+.loading-state,
+.error-state {
+  padding: 20px;
+  text-align: center;
+  border-radius: 8px;
+  margin: 10px 0;
+}
+
+.connection-error {
+  background: #fee;
+  color: #c33;
+  border: 1px solid #fcc;
+}
+
+.loading-state {
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeaa7;
+}
+
+.error-state {
+  background: #fee;
+  color: #c33;
+  border: 1px solid #fcc;
+}
+
+.retry-btn {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background 0.2s ease;
+}
+
+.retry-btn:hover {
+  background: #0056b3;
 }
 
 .no-alerts {
@@ -147,6 +298,15 @@
   color: #10b981;
   font-weight: 500;
   font-size: 1.1rem;
+  text-align: center;
+  padding: 40px 20px;
+  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+  border-radius: 10px;
+  border: 1px solid #c3e6cb;
+}
+
+.no-alerts p {
+  margin: 0;
 }
 
 .revenue-dropdown {
@@ -293,21 +453,34 @@
 
 /* Scrollbar Styling */
 .low-stock-scrollable::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 .low-stock-scrollable::-webkit-scrollbar-track {
-  background: #f1f5f9;
-  border-radius: 4px;
+  background: #f1f1f1;
+  border-radius: 3px;
 }
 
 .low-stock-scrollable::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 4px;
+  background: #ccc;
+  border-radius: 3px;
 }
 
 .low-stock-scrollable::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #bbb;
+}
+
+/* Remove old styles that are no longer needed */
+.stock-level {
+  display: none;
+}
+
+.danger {
+  display: none;
+}
+
+.urgency-indicator {
+  display: none;
 }
 
 /* Responsive Design */
@@ -368,6 +541,26 @@
 
   .btn-icon {
     font-size: 1.2rem;
+  }
+
+  .stock-item {
+    padding: 12px 15px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .stock-count {
+    align-self: flex-end;
+    font-size: 1.2rem;
+  }
+  
+  .item-name {
+    font-size: 1rem;
+  }
+  
+  .item-sku {
+    font-size: 0.8rem;
   }
 }
 
