@@ -7,14 +7,16 @@ const Login = ({ onLogin }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onLogin(); // Just call onLogin without any parameters
+    onLogin();
   };
 
   return (
     <div className="login-container">
       <div className="login-content">
         <div className="login-left">
-          <h1>Welcome to Inventory Management System</h1>
+          {/* Update the src to match your actual filename */}
+          <img src="/smart-logo2.png" alt="S-MART Logo" className="login-logo" />
+          
           <p>Streamline your inventory tracking and management with our comprehensive solution.</p>
           <ul>
             <li>Real-time inventory tracking</li>
