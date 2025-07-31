@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import './Login.css';
 
-const Login = ({ onLogin }) => {
+const Login = ({ onLogin, onSignupClick }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loginType, setLoginType] = useState('staff'); 
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
     onLogin(loginType, username, password);
   };
 
@@ -93,6 +92,18 @@ const Login = ({ onLogin }) => {
                 {loginType === 'admin' ? 'Admin Login' : 'Staff Login'}
               </button>
             </form>
+
+            {/* Signup Button */}
+            <div className="signup-section">
+              <p className="signup-text">Don't have an account?</p>
+              <button 
+                type="button" 
+                className="signup-button"
+                onClick={onSignupClick}
+              >
+                Sign Up
+              </button>
+            </div>
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-.login-container {
+.signup-container {
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -7,7 +7,7 @@
   padding: 20px;
 }
 
-.login-content {
+.signup-content {
   display: flex;
   max-width: 1200px;
   width: 100%;
@@ -18,7 +18,7 @@
   min-height: 600px;
 }
 
-.login-left {
+.signup-left {
   flex: 1;
   padding: 60px 40px;
   background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
@@ -28,7 +28,7 @@
   justify-content: center;
 }
 
-.login-logo {
+.signup-logo {
   max-width: 250px;
   height: auto;
   display: block;
@@ -38,11 +38,11 @@
   transition: filter 0.3s ease;
 }
 
-.login-logo:hover {
+.signup-logo:hover {
   filter: brightness(250%);
 }
 
-.login-left p {
+.signup-left p {
   font-size: 1.1rem;
   margin-bottom: 30px;
   line-height: 1.6;
@@ -50,14 +50,14 @@
   text-align: left;
 }
 
-.login-left ul {
+.signup-left ul {
   list-style: none;
   padding: 0;
   margin: 0;
   padding-left: 0;
 }
 
-.login-left li {
+.signup-left li {
   margin-bottom: 15px;
   padding-left: 20px;
   position: relative;
@@ -66,7 +66,7 @@
   text-align: left;
 }
 
-.login-left li::before {
+.signup-left li::before {
   content: "✓";
   position: absolute;
   left: 0;
@@ -74,7 +74,7 @@
   font-weight: bold;
 }
 
-.login-right {
+.signup-right {
   flex: 1;
   display: flex;
   align-items: center;
@@ -82,12 +82,12 @@
   padding: 40px;
 }
 
-.login-form-container {
+.signup-form-container {
   width: 100%;
   max-width: 400px;
 }
 
-.login-form-container h2 {
+.signup-form-container h2 {
   text-align: center;
   margin-bottom: 30px;
   color: #2c3e50;
@@ -95,8 +95,8 @@
   font-weight: 600;
 }
 
-/* Login Type Selector Styles */
-.login-type-selector {
+/* Role Selector Styles */
+.role-selector {
   margin-bottom: 25px;
   padding: 15px;
   background: #f8f9fa;
@@ -159,7 +159,7 @@
   font-weight: 600;
 }
 
-.login-form {
+.signup-form {
   width: 100%;
 }
 
@@ -190,8 +190,8 @@
   border-color: #3498db;
 }
 
-/* Base login button styles */
-.login-button {
+/* Signup button styles */
+.signup-button {
   width: 100%;
   padding: 15px;
   color: white;
@@ -203,49 +203,48 @@
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.login-button:hover {
+.signup-button:hover {
   transform: translateY(-2px);
 }
 
-.login-button:active {
+.signup-button:active {
   transform: translateY(0);
 }
 
-/* Different button styles for staff/admin */
-.login-button.staff-login {
+.signup-button.staff-signup {
   background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
 }
 
-.login-button.staff-login:hover {
+.signup-button.staff-signup:hover {
   box-shadow: 0 8px 25px rgba(52, 152, 219, 0.3);
 }
 
-.login-button.admin-login {
+.signup-button.admin-signup {
   background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
 }
 
-.login-button.admin-login:hover {
+.signup-button.admin-signup:hover {
   box-shadow: 0 8px 25px rgba(231, 76, 60, 0.3);
 }
 
-/* Signup Section Styles */
-.signup-section {
+/* Back to Login Section */
+.login-section {
   margin-top: 20px;
   text-align: center;
   padding-top: 20px;
   border-top: 1px solid #e1e8ed;
 }
 
-.signup-text {
+.login-text {
   margin-bottom: 15px;
   color: #666;
   font-size: 0.95rem;
 }
 
-.signup-button {
+.back-to-login-button {
   width: 100%;
   padding: 12px;
-  background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+  background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
   color: white;
   border: none;
   border-radius: 8px;
@@ -255,36 +254,35 @@
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.signup-button:hover {
+.back-to-login-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(39, 174, 96, 0.3);
+  box-shadow: 0 8px 25px rgba(149, 165, 166, 0.3);
 }
 
-.signup-button:active {
+.back-to-login-button:active {
   transform: translateY(0);
 }
 
 /* Responsive design */
 @media (max-width: 768px) {
-  .login-content {
+  .signup-content {
     flex-direction: column;
     margin: 20px;
   }
   
-  .login-left {
+  .signup-left {
     padding: 40px 30px;
   }
   
-  .login-logo {
+  .signup-logo {
     max-width: 200px;
     filter: brightness(200%);
   }
   
-  .login-right {
+  .signup-right {
     padding: 30px;
   }
 
-  /* Responsive adjustments for radio buttons */
   .radio-group {
     flex-direction: column;
     gap: 15px;
