@@ -25,6 +25,13 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 // Basic routes
+app.use(cors({
+  origin: ['http://localhost:3000'], // React frontend
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+}));
+
+
 app.get('/', (req, res) => {
   res.json({
     message: 'Welcome to the API',
@@ -38,7 +45,10 @@ app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 
 // Health check endpoint
-app.get('/health', (req, res) => {
+// Move the health check route to be under /api
+
+// Add this line after your API routes:
+app.get('/api/health', (req, res) => {
   res.status(200).json({
     status: 'OK',
     uptime: process.uptime(),
@@ -46,6 +56,7 @@ app.get('/health', (req, res) => {
     environment: process.env.NODE_ENV || 'development'
   });
 });
+
 
 // 404 handler
 app.use('*', (req, res) => {

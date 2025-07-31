@@ -6,31 +6,30 @@ import Inventory from './components/Inventory';
 import Dashboard from './components/Dashboard';
 import Login from './components/Login';
 import Signup from './components/Signup';
-// Add this import
 import Orders from './components/Orders';
-
-// In your component rendering logic
-
-
+// Add the TestConnection component
+import TestConnection from './components/TestConnection';
 
 function App() {
   const [currentSection, setCurrentSection] = useState('home');
   const [showLogin, setShowLogin] = useState(true);
   const [showSignup, setShowSignup] = useState(false);
   const [userRole, setUserRole] = useState(null);
+  // Add connection status state
+  const [isConnected, setIsConnected] = useState(false);
 
   const renderCurrentSection = () => {
     switch(currentSection) {
       case 'home':
-        return <Home userRole={userRole} />;
+        return <Home userRole={userRole} isConnected={isConnected} />;
       case 'inventory':
-        return <Inventory userRole={userRole} />;
+        return <Inventory userRole={userRole} isConnected={isConnected} />;
       case 'dashboard':
-        return <Dashboard userRole={userRole} />;
-        case 'orders':
-        return <Orders userRole={userRole} />;
-        default:
-        return <Home userRole={userRole} />;
+        return <Dashboard userRole={userRole} isConnected={isConnected} />;
+      case 'orders':
+        return <Orders userRole={userRole} isConnected={isConnected} />;
+      default:
+        return <Home userRole={userRole} isConnected={isConnected} />;
     }
   };
 
@@ -47,7 +46,6 @@ function App() {
 
   const handleSignupSubmit = (role, username, password) => {
     console.log(`Signup: Role: ${role}, Username: ${username}`);
-    // You can add signup logic here later
     alert('Account created successfully! Please login.');
   };
 
@@ -80,7 +78,7 @@ function App() {
     );
   }
 
-  // Show main app
+  // Show main app with connection test
   return (
     <div className="App">
       <Navbar 
@@ -88,6 +86,9 @@ function App() {
         setCurrentSection={setCurrentSection}
         userRole={userRole}
       />
+      {/* Add connection status banner */}
+      <TestConnection onConnectionChange={setIsConnected} />
+      
       <main className="main-content">
         {renderCurrentSection()}
       </main>
