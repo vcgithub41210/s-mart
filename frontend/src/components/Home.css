@@ -19,7 +19,7 @@
   margin-bottom: 1rem;
   font-weight: 700;
   text-shadow: none;
-  background: linear-gradient(90deg, #8e2de2, #4a00e0);
+  background: linear-gradient(90deg, #39373a, #171617);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -30,7 +30,7 @@
   margin-bottom: 3rem;
   opacity: 0.8;
   font-weight: 300;
-  background: linear-gradient(90deg, #8e2de2, #4a00e0);
+  background: linear-gradient(90deg, #4d4c4e, #4f4e50);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

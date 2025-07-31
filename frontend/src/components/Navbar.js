@@ -4,10 +4,10 @@ import './Navbar.css';
 
 const Navbar = ({ currentSection, setCurrentSection }) => {
   const navItems = [
-    { id: 'home', label: 'Home', icon: '🏠' },
-    { id: 'inventory', label: 'Inventory', icon: '📦' },
-    { id: 'orders', label: 'Orders', icon: '🛒' },
-    { id: 'dashboard', label: 'Dashboard', icon: '📊' }
+    { id: 'home', label: 'Home' },
+    { id: 'inventory', label: 'Inventory' },
+    { id: 'orders', label: 'Orders'},
+    { id: 'dashboard', label: 'Dashboard' }
   ];
 
 
