@@ -79,7 +79,7 @@ const AddProductModal = ({ isOpen, onClose, onSubmit }) => {
               value={formData.productName}
               onChange={handleInputChange}
               required
-              placeholder="Enter product name"
+              placeholder="Enter product name:"
             />
           </div>
 
