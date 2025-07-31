@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import './Inventory.css';
 import AddProductModal from './AddProductModal';
+import EditProductModal from './EditProductModal';
 import productService from '../services/productService';
 
 const Inventory = ({ userRole, isConnected }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [sortBy, setSortBy] = useState('name');
   const [sortOrder, setSortOrder] = useState('asc');
@@ -59,10 +62,10 @@ const Inventory = ({ userRole, isConnected }) => {
       // USING CORRECT FIELD NAMES FROM YOUR SCHEMA
       const transformedData = products.map(product => ({
         id: product._id || product.productId,
-        name: product.productName || 'Unknown Product',  // Fixed: productName -> name
-        category: product.category || 'General',          // This was already correct
-        stock: product.stockAvailable || 0,              // Fixed: stockAvailable -> stock
-        price: product.pricePerQty || 0,                 // Fixed: pricePerQty -> price
+        name: product.productName || 'Unknown Product',
+        category: product.category || 'General',
+        stock: product.stockAvailable || 0,
+        price: product.pricePerQty || 0,
         lowStockThreshold: product.lowStockThreshold || 10,
         skuCode: product.skuCode || product._id || product.productId,
         productId: product.productId || product._id
@@ -120,11 +123,11 @@ const Inventory = ({ userRole, isConnected }) => {
     try {
       // Transform frontend data to match your MongoDB schema
       const newProductData = {
-        productId: productData.skuCode || `PROD-${Date.now()}`, // Generate productId if not provided
-        productName: productData.productName,                   // Match your schema
+        productId: productData.skuCode || `PROD-${Date.now()}`,
+        productName: productData.productName,
         category: productData.category,
-        stockAvailable: parseInt(productData.availableQuantity), // Match your schema
-        pricePerQty: parseFloat(productData.price) || 0,        // Match your schema
+        stockAvailable: parseInt(productData.availableQuantity),
+        pricePerQty: parseFloat(productData.price) || 0,
         skuCode: productData.skuCode
       };
 
@@ -137,6 +140,30 @@ const Inventory = ({ userRole, isConnected }) => {
       console.error('Error adding product:', err);
     }
   };
+
+  // SIMPLIFIED: Handle stock update only
+  // FIXED: Handle stock update with proper error handling
+const handleEditStock = async (newStockQuantity) => {
+  try {
+    console.log('Updating stock for product:', selectedProduct.id, 'New stock:', newStockQuantity);
+    
+    // Use the updateStock API with direct stock value
+    const response = await productService.updateStock(selectedProduct.id, { 
+      stockAvailable: newStockQuantity 
+    });
+    
+    console.log('Stock update response:', response);
+    
+    await loadProducts(); // Refresh the list
+    setShowEditModal(false);
+    setSelectedProduct(null);
+    alert(`Stock updated successfully! New stock: ${newStockQuantity}`);
+  } catch (err) {
+    console.error('Stock update error:', err);
+    alert('Failed to update stock: ' + (err.response?.data?.message || err.message));
+  }
+};
+
 
   // Modified to use backend API
   const handleDeleteItem = async (itemId) => {
@@ -152,9 +179,10 @@ const Inventory = ({ userRole, isConnected }) => {
     }
   };
 
-  const handleEditItem = (itemId) => {
-    // Placeholder for edit functionality
-    alert(`Edit functionality for item ${itemId} - Coming soon!`);
+  // Handle edit button click - now only for stock editing
+  const handleEditItem = (item) => {
+    setSelectedProduct(item);
+    setShowEditModal(true);
   };
 
   const handleSortChange = (newSortBy) => {
@@ -329,8 +357,8 @@ const Inventory = ({ userRole, isConnected }) => {
                     <td className="actions-cell">
                       <button
                         className="action-btn edit-btn"
-                        onClick={() => handleEditItem(item.id)}
-                        title="Edit Item"
+                        onClick={() => handleEditItem(item)}
+                        title="Update Stock"
                       >
                         ✏️
                       </button>
@@ -384,6 +412,16 @@ const Inventory = ({ userRole, isConnected }) => {
           isOpen={showModal}
           onClose={() => setShowModal(false)}
           onSubmit={handleAddProduct}
+        />
+
+        <EditProductModal
+          isOpen={showEditModal}
+          onClose={() => {
+            setShowEditModal(false);
+            setSelectedProduct(null);
+          }}
+          onSubmit={handleEditStock}
+          product={selectedProduct}
         />
       </div>
     </div>

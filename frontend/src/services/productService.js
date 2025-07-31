@@ -1,13 +1,15 @@
 import api from './api';
 
-// Product API service functions
 const productService = {
   // Get all products
   getAllProducts: async () => {
     try {
       const response = await api.get('/products');
-      return response.data;
+      console.log('getAllProducts response:', response.data);
+      // Handle your backend response structure
+      return response.data.data || response.data;
     } catch (error) {
+      console.error('Error in getAllProducts:', error);
       throw error;
     }
   },
@@ -16,7 +18,7 @@ const productService = {
   getProductById: async (productId) => {
     try {
       const response = await api.get(`/products/${productId}`);
-      return response.data;
+      return response.data.data || response.data;
     } catch (error) {
       throw error;
     }
@@ -26,18 +28,21 @@ const productService = {
   createProduct: async (productData) => {
     try {
       const response = await api.post('/products', productData);
-      return response.data;
+      return response.data.data || response.data;
     } catch (error) {
       throw error;
     }
   },
 
-  // Update product stock
+  // Update product stock (ENHANCED FOR STOCK UPDATES)
   updateStock: async (productId, stockData) => {
     try {
+      console.log('Updating stock:', { productId, stockData });
       const response = await api.patch(`/products/${productId}/stock`, stockData);
-      return response.data;
+      console.log('Stock update response:', response.data);
+      return response.data.data || response.data;
     } catch (error) {
+      console.error('Error updating stock:', error);
       throw error;
     }
   },
@@ -46,7 +51,7 @@ const productService = {
   deleteProduct: async (productId) => {
     try {
       const response = await api.delete(`/products/${productId}`);
-      return response.data;
+      return response.data.data || response.data;
     } catch (error) {
       throw error;
     }

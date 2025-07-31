@@ -43,13 +43,57 @@ export const createProduct = async (req, res) => {
   }
 };
 
-// Update product stock
+// ENHANCED: Update product stock (handles both MongoDB _id and productId)
 export const updateStock = async (req, res) => {
   try {
     const { productId } = req.params;
-    const { stockQuantity, operation } = req.body; // operation: 'add' or 'reduce'
+    const { stockQuantity, operation, stockAvailable } = req.body;
 
-    const product = await Product.findOne({ productId });
+    console.log('Update stock request:', { productId, body: req.body });
+
+    // Handle direct stock update (for frontend integration)
+    if (stockAvailable !== undefined) {
+      let product;
+      
+      // First try to find by MongoDB _id (most common from frontend)
+      try {
+        product = await Product.findByIdAndUpdate(
+          productId,
+          { stockAvailable: parseInt(stockAvailable) },
+          { new: true, runValidators: true }
+        );
+      } catch (error) {
+        // If _id format is invalid, try finding by productId field
+        console.log('Trying to find by productId field...');
+        product = await Product.findOneAndUpdate(
+          { productId: productId },
+          { stockAvailable: parseInt(stockAvailable) },
+          { new: true, runValidators: true }
+        );
+      }
+
+      if (!product) {
+        return res.status(404).json({
+          success: false,
+          message: 'Product not found'
+        });
+      }
+
+      console.log('Stock updated successfully:', product);
+
+      return res.status(200).json({
+        success: true,
+        message: 'Stock updated successfully',
+        data: product
+      });
+    }
+
+    // Handle operation-based stock updates (existing logic)
+    let product = await Product.findById(productId);
+    
+    if (!product) {
+      product = await Product.findOne({ productId });
+    }
 
     if (!product) {
       return res.status(404).json({
@@ -87,12 +131,20 @@ export const updateStock = async (req, res) => {
   }
 };
 
-// Delete product
+// ENHANCED: Delete product (handles both MongoDB _id and productId)
 export const deleteProduct = async (req, res) => {
   try {
     const { productId } = req.params;
 
-    const product = await Product.findOneAndDelete({ productId });
+    let product;
+    
+    // Try to find by MongoDB _id first
+    try {
+      product = await Product.findByIdAndDelete(productId);
+    } catch (error) {
+      // If _id format is invalid, try finding by productId field
+      product = await Product.findOneAndDelete({ productId });
+    }
 
     if (!product) {
       return res.status(404).json({
@@ -140,11 +192,20 @@ export const getAllProducts = async (req, res) => {
   }
 };
 
-// Get product by ID
+// ENHANCED: Get product by ID (handles both MongoDB _id and productId)
 export const getProductById = async (req, res) => {
   try {
     const { productId } = req.params;
-    const product = await Product.findOne({ productId });
+    
+    let product;
+    
+    // Try to find by MongoDB _id first
+    try {
+      product = await Product.findById(productId);
+    } catch (error) {
+      // If _id format is invalid, try finding by productId field
+      product = await Product.findOne({ productId });
+    }
 
     if (!product) {
       return res.status(404).json({
