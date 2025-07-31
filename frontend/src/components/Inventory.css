@@ -114,6 +114,19 @@
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
 
+/* No items message */
+.no-items {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+  font-style: italic;
+}
+
+.no-items p {
+  margin: 0;
+  font-size: 16px;
+}
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .inventory-header {

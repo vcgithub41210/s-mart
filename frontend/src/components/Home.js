@@ -1,7 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Home.css';
+import AddProductModal from './AddProductModal';
 
 const Home = () => {
+  const [showModal, setShowModal] = useState(false);
+
+  const handleAddProduct = (productData) => {
+    // Here you would typically send the data to your backend API
+    console.log('Product added:', productData);
+    
+    // Close modal
+    setShowModal(false);
+    
+    // You can add success notification here
+    alert('Product added successfully!');
+  };
+
   return (
     <div className="home-container">
       <div className="hero-section">
@@ -31,11 +45,22 @@ const Home = () => {
       <div className="quick-actions">
         <h2>Quick Actions</h2>
         <div className="action-buttons">
-          <button className="action-btn primary">Add New Item</button>
+          <button 
+            className="action-btn primary"
+            onClick={() => setShowModal(true)}
+          >
+            Add New Item
+          </button>
           <button className="action-btn secondary">Generate Report</button>
           <button className="action-btn secondary">Check Stock Levels</button>
         </div>
       </div>
+
+      <AddProductModal 
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        onSubmit={handleAddProduct}
+      />
     </div>
   );
 };
