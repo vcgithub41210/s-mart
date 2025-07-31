@@ -8,6 +8,7 @@ right: 0;
 z-index: 1000;
 }
 
+
 .navbar-container {
 max-width: 1200px;
 margin: 0 auto;
@@ -18,12 +19,14 @@ padding: 0 20px;
 height: 70px;
 }
 
+
 .navbar-brand {
 display: flex;
 flex-direction: row; /* Keep as row for logo and S-Mart side by side /
 align-items: center; / Vertically align logo and S-Mart /
 gap: 10px; / Adjust spacing */
 }
+
 
 .navbar-brand img {
 height: 120px;
@@ -32,15 +35,19 @@ vertical-align: middle;
 }
 
 
+
+
 .navbar-menu {
 display: flex;
 list-style: none;
 gap: 10px;
 }
 
+
 .navbar-item {
 margin: 0;
 }
+
 
 .navbar-link {
 display: flex;
@@ -58,11 +65,13 @@ font-size: 14px;
 font-weight: 500;
 }
 
+
 .navbar-link:hover {
 background: rgba(255, 255, 255, 0.1);
 color: white;
 transform: translateY(-1px);
 }
+
 
 .navbar-link.active {
 background: rgba(255, 255, 255, 0.2);
@@ -70,13 +79,16 @@ color: white;
 box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
+
 .nav-icon {
 font-size: 16px;
 }
 
+
 .nav-text {
 font-weight: 500;
 }
+
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
@@ -85,37 +97,46 @@ padding: 0 15px;
 height: 80px;
 }
 
+
 .navbar-brand {
 gap: 8px; /* Adjust logo spacing in mobile */
 }
+
 
 .navbar-brand img {
 height: 28px; /* Adjust logo size for mobile */
 }
 
+
 .navbar-brand h2 {
 font-size: 22px;
 }
+
 
 .brand-subtitle {
 font-size: 11px;
 margin-top: 1px;
 }
 
+
 .navbar-menu {
 gap: 5px;
 }
+
 
 .navbar-link {
 padding: 10px 15px;
 font-size: 13px;
 }
 
+
 .nav-text {
 display: none;
 }
+
 
 .nav-icon {
 font-size: 18px;
 }
 }
+

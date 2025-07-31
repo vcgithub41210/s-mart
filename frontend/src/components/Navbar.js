@@ -1,6 +1,7 @@
 import React from 'react';
 import './Navbar.css';
 
+
 const Navbar = ({ currentSection, setCurrentSection }) => {
   const navItems = [
     { id: 'home', label: 'Home', icon: '🏠' },
@@ -8,13 +9,14 @@ const Navbar = ({ currentSection, setCurrentSection }) => {
     { id: 'dashboard', label: 'Dashboard', icon: '📊' }
   ];
 
+
   return (
     <nav className="navbar">
       <div className="navbar-container">
         <div className="navbar-brand">
           <img src="smart-logo2.png" alt="S-Mart Logo" />
         </div>
-        
+       
         <ul className="navbar-menu">
           {navItems.map((item) => (
             <li key={item.id} className="navbar-item">
@@ -33,4 +35,8 @@ const Navbar = ({ currentSection, setCurrentSection }) => {
   );
 };
 
+
 export default Navbar;
+
+
+
