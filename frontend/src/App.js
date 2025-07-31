@@ -24,11 +24,11 @@ function App() {
   };
 
   const handleLogin = () => {
-    // Simply redirect to home page without any authentication
+    
     setShowLogin(false);
   };
 
-  // If showLogin is true, display login page
+  
   if (showLogin) {
     return (
       <div className="App">
@@ -37,7 +37,7 @@ function App() {
     );
   }
 
-  // Otherwise show the main app
+  
   return (
     <div className="App">
       <Navbar 

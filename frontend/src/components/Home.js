@@ -9,7 +9,7 @@ const Home = () => {
   const [lowStockItems, setLowStockItems] = useState([]);
 
 
-  // Mock data for demonstration - replace with actual API call
+  
   const mockLowStockItems = [
     { id: 1, name: 'Wireless Headphones', currentStock: 3, minStock: 10 },
     { id: 2, name: 'USB Cables', currentStock: 5, minStock: 15 },
@@ -17,11 +17,11 @@ const Home = () => {
   ];
 
 
-  // Check for low stock items on component mount
+  
   useEffect(() => {
-    // Simulate API call to check low stock items
+    
     const checkLowStock = () => {
-      // In a real app, this would be an API call
+      
       const lowStockData = mockLowStockItems.filter(item => item.currentStock <= item.minStock);
      
       if (lowStockData.length > 0) {
@@ -31,11 +31,11 @@ const Home = () => {
     };
 
 
-    // Check immediately on mount
+    
     checkLowStock();
 
 
-    // Set up periodic checking (every 5 minutes)
+    
     const interval = setInterval(checkLowStock, 5 * 60 * 1000);
 
 
@@ -44,13 +44,13 @@ const Home = () => {
 
 
   const handleAddProduct = (productData) => {
-    // Here you would typically send the data to your backend API
+    
     console.log('Product added:', productData);
    
-    // Close modal
+   
     setShowModal(false);
    
-    // You can add success notification here
+    
     alert('Product added successfully!');
   };
 
@@ -61,7 +61,7 @@ const Home = () => {
 
 
   const viewLowStockDetails = () => {
-    // Navigate to inventory page or show detailed view
+    
     console.log('Viewing low stock details:', lowStockItems);
     alert(`Low stock items:\n${lowStockItems.map(item => `${item.name}: ${item.currentStock} left`).join('\n')}`);
   };
