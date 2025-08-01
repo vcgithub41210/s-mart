@@ -304,13 +304,7 @@ const handleEditStock = async (newStockQuantity) => {
               Add New Item
             </button>
 
-            <button
-              className="btn-secondary"
-              onClick={loadProducts}
-              title="Refresh inventory"
-            >
-              🔄 Refresh
-            </button>
+            
           </div>
         </div>
 

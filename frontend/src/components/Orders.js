@@ -87,6 +87,7 @@ const Orders = ({ isConnected }) => {
   const handleCompleteOrder = async (orderId) => {
     if (window.confirm('Are you sure you want to mark this order as completed?')) {
       try {
+        console.log('Completing order with ID:', orderId);
         await orderService.updateOrderStatus(orderId, 'completed');
         await loadOrders(); // Refresh orders
         alert('Order marked as completed!');
@@ -100,6 +101,7 @@ const Orders = ({ isConnected }) => {
   const handleCancelOrder = async (orderId) => {
     if (window.confirm('Are you sure you want to cancel this order? Stock will be restored.')) {
       try {
+        console.log('Cancelling order with ID:', orderId);
         await orderService.cancelOrder(orderId);
         await loadOrders(); // Refresh orders
         alert('Order cancelled successfully! Stock has been restored.');
@@ -305,42 +307,47 @@ const Orders = ({ isConnected }) => {
                     </div>
                   </div>
 
-                  // Replace the existing button section with this structure:
-
-<div className="order-footer">
-  <div className="order-total">
-    Total: ₹{order.totalAmount.toFixed(2)}
-  </div>
-  
-  {order.status === 'pending' && (
-    <div className="order-actions">
-      <button 
-        className="complete-btn"
-        onClick={() => handleCompleteOrder(order._id)}
-      >
-        Mark as Completed
-      </button>
-      <button 
-        className="cancel-btn"
-        onClick={() => handleCancelOrder(order._id)}
-      >
-        Cancel Order
-      </button>
-    </div>
-  )}
-  
-  {order.status === 'completed' && (
-    <div className="completed-actions">
-      <span className="completed-time">
-        Completed at {new Date(order.updatedAt).toLocaleString()}
-      </span>
-      <button className="bill-btn" onClick={() => handleGenerateBill(order._id)}>
-        📄 Generate Bill
-      </button>
-    </div>
-  )}
-</div>
-
+                  <div className="order-footer">
+                    <div className="order-total">
+                      <strong>Total: {formatCurrency(order.totalAmount)}</strong>
+                    </div>
+                    <div className="order-actions">
+                      {order.status === 'pending' ? (
+                        <div className="pending-actions">
+                          <button
+                            className="complete-btn"
+                            onClick={() => handleCompleteOrder(order.orderId)}
+                          >
+                            ✅ Mark as Completed
+                          </button>
+                          <button
+                            className="cancel-btn"
+                            onClick={() => handleCancelOrder(order.orderId)}
+                          >
+                            ❌ Cancel Order
+                          </button>
+                        </div>
+                      ) : order.status === 'completed' ? (
+                        <div className="completed-actions">
+                          <span className="completed-time">
+                            Completed at {order.completedTime}
+                          </span>
+                          <button
+                            className="bill-btn"
+                            onClick={() => handleGenerateBill(order)}
+                          >
+                            📄 Generate Bill
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="cancelled-actions">
+                          <span className="cancelled-info">
+                            Order was cancelled
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>

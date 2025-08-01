@@ -83,7 +83,7 @@
 }
 
 .stat-number {
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   font-weight: bold;
   color: #1f2937;
   margin-bottom: 0.5rem;
@@ -567,5 +567,276 @@
   .cancel-btn {
     padding: 0.5rem 1rem;
     font-size: 0.85rem;
+  }
+}
+
+/* Order Card - Use flexbox for consistent layout */
+.order-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 400px; /* Set minimum height for consistency */
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s ease;
+}
+
+.order-card:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Order Header - Fixed height */
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  min-height: 60px; /* Fixed height */
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+/* Customer Info - Fixed height */
+.customer-info {
+  margin-bottom: 16px;
+  min-height: 100px; /* Fixed height */
+}
+
+.customer-info h4 {
+  margin: 0 0 8px 0;
+  color: #374151;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.customer-details p {
+  margin: 4px 0;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+/* Order Items - Flexible height but controlled */
+.order-items {
+  flex: 1; /* Takes up remaining space */
+  margin-bottom: 16px;
+  min-height: 120px; /* Minimum height */
+}
+
+.order-items h4 {
+  margin: 0 0 8px 0;
+  color: #374151;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.items-list {
+  max-height: 150px; /* Maximum height for scrolling */
+  overflow-y: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 8px;
+  background: #f9fafb;
+}
+
+.item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.item-row:last-child {
+  border-bottom: none;
+}
+
+/* Order Footer - Fixed at bottom */
+.order-footer {
+  margin-top: auto; /* Push to bottom */
+  padding-top: 16px;
+  border-top: 2px solid #f3f4f6;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.order-total {
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1f2937;
+  padding: 8px 12px;
+  background: #f0fdf4;
+  border-radius: 6px;
+  border: 1px solid #bbf7d0;
+}
+
+/* Action Buttons - Consistent positioning */
+.order-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 45px; /* Fixed minimum height */
+}
+
+.pending-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.complete-btn,
+.cancel-btn {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 40px; /* Fixed height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.complete-btn {
+  background: #10b981;
+  color: white;
+}
+
+.complete-btn:hover {
+  background: #059669;
+  transform: translateY(-1px);
+}
+
+.cancel-btn {
+  background: #ef4444;
+  color: white;
+}
+
+.cancel-btn:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+}
+
+/* Completed Actions */
+.completed-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-height: 65px; /* Fixed height */
+  justify-content: center;
+}
+
+.completed-time {
+  font-size: 0.8rem;
+  color: #6b7280;
+  text-align: center;
+}
+
+.bill-btn {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 36px;
+}
+
+.bill-btn:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+}
+
+/* Cancelled Actions */
+.cancelled-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 45px; /* Fixed height */
+}
+
+.cancelled-info {
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-style: italic;
+  text-align: center;
+}
+
+/* Status Badges */
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-badge.pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-badge.completed {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.status-badge.cancelled {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* Order Grid */
+.orders-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 20px;
+  padding: 20px 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .order-card {
+    min-height: 350px;
+  }
+  
+  .orders-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .pending-actions {
+    flex-direction: column;
+  }
+  
+  .complete-btn,
+  .cancel-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .order-card {
+    min-height: 320px;
+    padding: 16px;
+  }
+  
+  .customer-info {
+    min-height: 80px;
+  }
+  
+  .order-items {
+    min-height: 100px;
   }
 }
