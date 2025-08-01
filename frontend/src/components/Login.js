@@ -10,14 +10,13 @@ const Login = ({ onLogin, onSignupClick }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const navigate = useNavigate(); // Add this for navigation
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
-    // Basic validation
     if (!username.trim() || !password.trim()) {
       setError('Please fill in all fields');
       setLoading(false);
@@ -25,23 +24,19 @@ const Login = ({ onLogin, onSignupClick }) => {
     }
 
     try {
-      // Use authService to login with JWT authentication
       const result = await authService.login(username.trim(), password, loginType);
       
       if (result.success) {
-        // Call the parent onLogin callback if it exists
         if (onLogin) {
           onLogin(loginType, username, password);
         }
 
-        // Navigate based on role
         if (loginType === 'admin') {
           navigate('/dashboard');
         } else {
           navigate('/home');
         }
 
-        // Clear form on successful login
         setUsername('');
         setPassword('');
         setError('');
@@ -49,7 +44,6 @@ const Login = ({ onLogin, onSignupClick }) => {
     } catch (err) {
       console.error('Login error:', err);
       
-      // Extract error message from response
       let errorMessage = 'Login failed. Please try again.';
       
       if (err.response?.data?.message) {
@@ -64,12 +58,10 @@ const Login = ({ onLogin, onSignupClick }) => {
     }
   };
 
-  // Handle signup button click - FIXED
   const handleSignupClick = () => {
-    navigate('/signup'); // Use React Router navigation
+    navigate('/signup');
   };
 
-  // Clear error when user starts typing
   const handleInputChange = (setter, value) => {
     setter(value);
     if (error) {
@@ -96,7 +88,6 @@ const Login = ({ onLogin, onSignupClick }) => {
           <div className="login-form-container">
             <h2>Login</h2>
             
-            {/* Error Message Display */}
             {error && (
               <div className="error-message">
                 <span className="error-icon">⚠️</span>
@@ -104,7 +95,6 @@ const Login = ({ onLogin, onSignupClick }) => {
               </div>
             )}
             
-            {/* Login Type Selection */}
             <div className="login-type-selector">
               <div className="radio-group">
                 <label className="radio-option">
@@ -149,6 +139,11 @@ const Login = ({ onLogin, onSignupClick }) => {
                   required
                   disabled={loading}
                   autoComplete="username"
+                  style={{
+                    color: '#333',
+                    backgroundColor: '#fff',
+                    fontSize: '16px'
+                  }}
                 />
               </div>
               
@@ -165,6 +160,11 @@ const Login = ({ onLogin, onSignupClick }) => {
                   required
                   disabled={loading}
                   autoComplete="current-password"
+                  style={{
+                    color: '#333',
+                    backgroundColor: '#fff',
+                    fontSize: '16px'
+                  }}
                 />
               </div>
               
@@ -184,7 +184,6 @@ const Login = ({ onLogin, onSignupClick }) => {
               </button>
             </form>
 
-            {/* Demo Credentials Info */}
             <div className="demo-credentials">
               <div className="demo-info">
                 <h4>Demo Credentials:</h4>
@@ -199,13 +198,12 @@ const Login = ({ onLogin, onSignupClick }) => {
               </div>
             </div>
 
-            {/* Signup Button - FIXED */}
             <div className="signup-section">
               <p className="signup-text">Don't have an account?</p>
               <button 
                 type="button" 
                 className="signup-button"
-                onClick={handleSignupClick} // Use the new handler
+                onClick={handleSignupClick}
                 disabled={loading}
               >
                 Sign Up
