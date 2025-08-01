@@ -1,14 +1,80 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import authService from '../services/authService';
 import './Login.css';
 
 const Login = ({ onLogin, onSignupClick }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [loginType, setLoginType] = useState('staff'); 
+  const [loginType, setLoginType] = useState('staff');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const navigate = useNavigate(); // Add this for navigation
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onLogin(loginType, username, password);
+    setLoading(true);
+    setError('');
+
+    // Basic validation
+    if (!username.trim() || !password.trim()) {
+      setError('Please fill in all fields');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      // Use authService to login with JWT authentication
+      const result = await authService.login(username.trim(), password, loginType);
+      
+      if (result.success) {
+        // Call the parent onLogin callback if it exists
+        if (onLogin) {
+          onLogin(loginType, username, password);
+        }
+
+        // Navigate based on role
+        if (loginType === 'admin') {
+          navigate('/dashboard');
+        } else {
+          navigate('/home');
+        }
+
+        // Clear form on successful login
+        setUsername('');
+        setPassword('');
+        setError('');
+      }
+    } catch (err) {
+      console.error('Login error:', err);
+      
+      // Extract error message from response
+      let errorMessage = 'Login failed. Please try again.';
+      
+      if (err.response?.data?.message) {
+        errorMessage = err.response.data.message;
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle signup button click - FIXED
+  const handleSignupClick = () => {
+    navigate('/signup'); // Use React Router navigation
+  };
+
+  // Clear error when user starts typing
+  const handleInputChange = (setter, value) => {
+    setter(value);
+    if (error) {
+      setError('');
+    }
   };
 
   return (
@@ -30,6 +96,14 @@ const Login = ({ onLogin, onSignupClick }) => {
           <div className="login-form-container">
             <h2>Login</h2>
             
+            {/* Error Message Display */}
+            {error && (
+              <div className="error-message">
+                <span className="error-icon">⚠️</span>
+                {error}
+              </div>
+            )}
+            
             {/* Login Type Selection */}
             <div className="login-type-selector">
               <div className="radio-group">
@@ -40,6 +114,7 @@ const Login = ({ onLogin, onSignupClick }) => {
                     value="staff"
                     checked={loginType === 'staff'}
                     onChange={(e) => setLoginType(e.target.value)}
+                    disabled={loading}
                   />
                   <span className="radio-custom"></span>
                   Staff Login
@@ -52,6 +127,7 @@ const Login = ({ onLogin, onSignupClick }) => {
                     value="admin"
                     checked={loginType === 'admin'}
                     onChange={(e) => setLoginType(e.target.value)}
+                    disabled={loading}
                   />
                   <span className="radio-custom"></span>
                   Admin Login
@@ -68,9 +144,11 @@ const Login = ({ onLogin, onSignupClick }) => {
                   type="text"
                   id="username"
                   value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  onChange={(e) => handleInputChange(setUsername, e.target.value)}
                   placeholder={loginType === 'admin' ? 'Enter admin username' : 'Enter staff username'}
                   required
+                  disabled={loading}
+                  autoComplete="username"
                 />
               </div>
               
@@ -82,24 +160,53 @@ const Login = ({ onLogin, onSignupClick }) => {
                   type="password"
                   id="password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => handleInputChange(setPassword, e.target.value)}
                   placeholder={loginType === 'admin' ? 'Enter admin password' : 'Enter staff password'}
                   required
+                  disabled={loading}
+                  autoComplete="current-password"
                 />
               </div>
               
-              <button type="submit" className={`login-button ${loginType}-login`}>
-                {loginType === 'admin' ? 'Admin Login' : 'Staff Login'}
+              <button 
+                type="submit" 
+                className={`login-button ${loginType}-login ${loading ? 'loading' : ''}`}
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    <span className="loading-spinner"></span>
+                    Signing in...
+                  </>
+                ) : (
+                  loginType === 'admin' ? 'Admin Login' : 'Staff Login'
+                )}
               </button>
             </form>
 
-            {/* Signup Button */}
+            {/* Demo Credentials Info */}
+            <div className="demo-credentials">
+              <div className="demo-info">
+                <h4>Demo Credentials:</h4>
+                <div className="demo-accounts">
+                  <div className="demo-account">
+                    <strong>Admin:</strong> admin / admin123
+                  </div>
+                  <div className="demo-account">
+                    <strong>Staff:</strong> staff / staff123
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Signup Button - FIXED */}
             <div className="signup-section">
               <p className="signup-text">Don't have an account?</p>
               <button 
                 type="button" 
                 className="signup-button"
-                onClick={onSignupClick}
+                onClick={handleSignupClick} // Use the new handler
+                disabled={loading}
               >
                 Sign Up
               </button>

@@ -1,132 +1,184 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import authService from '../services/authService';
 import './Signup.css';
 
 const Signup = ({ onSignupSubmit, onBackToLogin }) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [role, setRole] = useState('staff');
+  const [formData, setFormData] = useState({
+    fullName: '',
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+    if (error) setError(''); // Clear error when user types
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Basic password confirmation check
-    if (password !== confirmPassword) {
-      alert('Passwords do not match!');
+    setLoading(true);
+    setError('');
+
+    // Basic validation
+    if (!formData.fullName || !formData.username || !formData.email || !formData.password) {
+      setError('Please fill in all fields');
+      setLoading(false);
       return;
     }
 
-    // Call the signup handler and redirect back to login
-    onSignupSubmit(role, username, password);
-    onBackToLogin();
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
+      setLoading(false);
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      setError('Password must be at least 6 characters long');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      // Call API to create account
+      const response = await fetch('http://localhost:5000/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          fullName: formData.fullName,
+          username: formData.username,
+          email: formData.email,
+          password: formData.password
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        // Account created successfully
+        alert('Account created successfully! You can now login.');
+        
+        // Call the parent callback if provided
+        if (onSignupSubmit) {
+          onSignupSubmit('staff', formData.username, formData.password);
+        }
+        
+        // Navigate to login page
+        navigate('/login');
+      } else {
+        setError(data.message || 'Failed to create account');
+      }
+    } catch (err) {
+      console.error('Signup error:', err);
+      setError('Network error. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="signup-container">
-      <div className="signup-content">
-        <div className="signup-left">
-          <img src="/smart-logo2.png" alt="S-MART Logo" className="signup-logo" />
-          
-          <p>Join our inventory management system and streamline your business operations.</p>
-          <ul>
-            <li>Create your secure account</li>
-            <li>Choose your role and permissions</li>
-            <li>Start managing inventory efficiently</li>
-            <li>Access comprehensive analytics</li>
-          </ul>
-        </div>
+      <div className="signup-form">
+        <h2>Create Account</h2>
         
-        <div className="signup-right">
-          <div className="signup-form-container">
-            <h2>Sign Up</h2>
-            
-            {/* Role Selection */}
-            <div className="role-selector">
-              <div className="radio-group">
-                <label className="radio-option">
-                  <input
-                    type="radio"
-                    name="role"
-                    value="staff"
-                    checked={role === 'staff'}
-                    onChange={(e) => setRole(e.target.value)}
-                  />
-                  <span className="radio-custom"></span>
-                  Staff Account
-                </label>
-                
-                <label className="radio-option">
-                  <input
-                    type="radio"
-                    name="role"
-                    value="admin"
-                    checked={role === 'admin'}
-                    onChange={(e) => setRole(e.target.value)}
-                  />
-                  <span className="radio-custom"></span>
-                  Admin Account
-                </label>
-              </div>
-            </div>
-
-            <form onSubmit={handleSubmit} className="signup-form">
-              <div className="form-group">
-                <label htmlFor="signup-username">
-                  {role === 'admin' ? 'Admin Username' : 'Staff Username'}
-                </label>
-                <input
-                  type="text"
-                  id="signup-username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  placeholder={role === 'admin' ? 'Enter admin username' : 'Enter staff username'}
-                  required
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="signup-password">
-                  {role === 'admin' ? 'Admin Password' : 'Staff Password'}
-                </label>
-                <input
-                  type="password"
-                  id="signup-password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder={role === 'admin' ? 'Enter admin password' : 'Enter staff password'}
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="confirm-password">Confirm Password</label>
-                <input
-                  type="password"
-                  id="confirm-password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Confirm your password"
-                  required
-                />
-              </div>
-              
-              <button type="submit" className={`signup-button ${role}-signup`}>
-                {role === 'admin' ? 'Create Admin Account' : 'Create Staff Account'}
-              </button>
-            </form>
-
-            {/* Back to Login */}
-            <div className="login-section">
-              <p className="login-text">Already have an account?</p>
-              <button 
-                type="button" 
-                className="back-to-login-button"
-                onClick={onBackToLogin}
-              >
-                Back to Login
-              </button>
-            </div>
+        {error && (
+          <div className="error-message">
+            ⚠️ {error}
           </div>
+        )}
+        
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="fullName">Full Name</label>
+            <input
+              type="text"
+              id="fullName"
+              name="fullName"
+              value={formData.fullName}
+              onChange={handleChange}
+              required
+              disabled={loading}
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              required
+              disabled={loading}
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              disabled={loading}
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              disabled={loading}
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="confirmPassword">Confirm Password</label>
+            <input
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              required
+              disabled={loading}
+            />
+          </div>
+
+          <button type="submit" className="signup-button" disabled={loading}>
+            {loading ? 'Creating Account...' : 'Create Account'}
+          </button>
+        </form>
+
+        <div className="login-link">
+          <p>Already have an account?</p>
+          <button 
+            type="button" 
+            className="back-to-login-btn"
+            onClick={() => navigate('/login')}
+            disabled={loading}
+          >
+            Back to Login
+          </button>
         </div>
       </div>
     </div>

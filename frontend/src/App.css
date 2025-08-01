@@ -50,7 +50,7 @@ body {
   z-index: 1;
   
   /* WHITE BACKGROUND - This covers the blue gradient */
-  background: white;
+  background: rgb(255, 255, 255);
   border-radius: 0;
   min-height: calc(100vh - 60px); /* Adjusted to match margin-top */
   margin-bottom: 0; /* Ensure no bottom margin */

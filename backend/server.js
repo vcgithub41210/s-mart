@@ -8,6 +8,7 @@ import dotenv from 'dotenv';
 // Import routes
 import productRoutes from './routes/productRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
+import authRoutes from './routes/authRoutes.js'; // Add auth routes
 
 // Load environment variables
 dotenv.config();
@@ -20,7 +21,7 @@ connectDB();
 // Middleware
 app.use(helmet());
 app.use(cors({
-  origin: ['http://localhost:3000'], // React frontend
+  origin: [process.env.FRONTEND_URL || 'http://localhost:3000'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
 }));
@@ -31,13 +32,14 @@ app.use(express.urlencoded({ extended: true }));
 // Basic routes
 app.get('/', (req, res) => {
   res.json({
-    message: 'Welcome to the API',
+    message: 'Welcome to S-Mart API',
     status: 'Server is running successfully',
     timestamp: new Date().toISOString()
   });
 });
 
 // API routes
+app.use('/api/auth', authRoutes);        // Add auth routes BEFORE protected routes
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 
@@ -75,7 +77,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-const PORT = process.env.PORT || 5000; // Changed back to 5000
+const PORT = process.env.PORT || 5000;
 const server = app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
@@ -91,5 +93,4 @@ process.on('SIGINT', () => {
   });
 });
 
-// Export the app (ES6 way)
 export default app;

@@ -50,13 +50,15 @@
   flex: 1;
   min-width: 450px;
   max-width: 550px;
-  background: white;
+  background: rgb(255, 255, 255);
   border-radius: 16px;
   padding: 2rem;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e5e7eb;
+  border: 2px solid #5493f7c2; /* Blue border outline */
   backdrop-filter: blur(10px);
 }
+
+
 
 .section-header {
   display: flex;
@@ -75,7 +77,7 @@
 }
 
 .alert-badge {
-  background: #ef4444;
+  background: #fa5353cc;
   color: white;
   padding: 0.4rem 0.8rem;
   border-radius: 20px;
