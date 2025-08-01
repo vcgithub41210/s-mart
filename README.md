@@ -97,3 +97,17 @@ NODE_ENV=development
 Frontend URL (for CORS)
 FRONTEND_URL=http://localhost:3000
 ```
+
+### 5. Run Backend and Frontend
+
+```
+cd backend
+npm start
+
+cd frontend
+npm start
+```
+
+
+
+
