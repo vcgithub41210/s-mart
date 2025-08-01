@@ -7,7 +7,8 @@ const AddProductModal = ({ isOpen, onClose, onSubmit }) => {
     availableQuantity: '',
     category: '',
     skuCode: '',
-    lowStockThreshold: ''
+    lowStockThreshold: '',
+    pricePerQty: '' // Added price field
   });
 
   const categories = [
@@ -35,24 +36,24 @@ const AddProductModal = ({ isOpen, onClose, onSubmit }) => {
     e.preventDefault();
     onSubmit(formData);
     
-    // Reset form
     setFormData({
       productName: '',
       availableQuantity: '',
       category: '',
       skuCode: '',
-      lowStockThreshold: ''
+      lowStockThreshold: '',
+      pricePerQty: '' // Reset price field
     });
   };
 
   const handleClose = () => {
-    // Reset form when closing
     setFormData({
       productName: '',
       availableQuantity: '',
       category: '',
       skuCode: '',
-      lowStockThreshold: ''
+      lowStockThreshold: '',
+      pricePerQty: '' // Reset price field
     });
     onClose();
   };
@@ -79,7 +80,7 @@ const AddProductModal = ({ isOpen, onClose, onSubmit }) => {
               value={formData.productName}
               onChange={handleInputChange}
               required
-              placeholder="Enter product name:"
+              placeholder="Enter product name"
             />
           </div>
 
@@ -99,6 +100,23 @@ const AddProductModal = ({ isOpen, onClose, onSubmit }) => {
             </div>
 
             <div className="form-group">
+              <label htmlFor="price">Price (INR) *</label>
+              <input
+                type="number"
+                id="price"
+                name="price"
+                value={formData.price}
+                onChange={handleInputChange}
+                required
+                min="0"
+                step="0.01"
+                placeholder="0.00"
+              />
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
               <label htmlFor="lowStockThreshold">Low Stock Threshold *</label>
               <input
                 type="number"
@@ -109,6 +127,19 @@ const AddProductModal = ({ isOpen, onClose, onSubmit }) => {
                 required
                 min="1"
                 placeholder="10"
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="skuCode">SKU Code *</label>
+              <input
+                type="text"
+                id="skuCode"
+                name="skuCode"
+                value={formData.skuCode}
+                onChange={handleInputChange}
+                required
+                placeholder="e.g., SKU-001-ABC"
               />
             </div>
           </div>
@@ -129,19 +160,6 @@ const AddProductModal = ({ isOpen, onClose, onSubmit }) => {
                 </option>
               ))}
             </select>
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="skuCode">SKU Code *</label>
-            <input
-              type="text"
-              id="skuCode"
-              name="skuCode"
-              value={formData.skuCode}
-              onChange={handleInputChange}
-              required
-              placeholder="e.g., SKU-001-ABC"
-            />
           </div>
 
           <div className="form-actions">

@@ -5,7 +5,7 @@ import PlaceOrderModal from './PlaceOrderModal';
 import productService from '../services/productService';
 import orderService from '../services/orderService';
 
-const Home = ({ isConnected }) => {
+const Home = ({ userRole, isConnected }) => { // Added userRole prop
   const [showModal, setShowModal] = useState(false);
   const [showOrderModal, setShowOrderModal] = useState(false);
   const [lowStockItems, setLowStockItems] = useState([]);
@@ -171,6 +171,12 @@ const Home = ({ isConnected }) => {
 
   const handleAddProduct = async (productData) => {
     try {
+      // Check if user is admin before allowing product creation
+      if (userRole !== 'admin') {
+        alert('Only administrators can add new products.');
+        return;
+      }
+
       // Transform frontend data to match your MongoDB schema
       const newProductData = {
         productId: productData.skuCode || `PROD-${Date.now()}`,
@@ -359,7 +365,6 @@ Stock has been automatically updated.`);
                   <option value="monthly">Monthly</option>
                   <option value="total">All Time</option>
                 </select>
-                
               </div>
             </div>
             
@@ -397,51 +402,55 @@ Stock has been automatically updated.`);
           </div>
         </div>
 
-        {/* Action Buttons Section with Inline Styles */}
+        {/* Action Buttons Section - CONDITIONALLY RENDERED */}
         <div style={{
           marginTop: '3rem',
           textAlign: 'center',
           display: 'flex',
-          gap: '2.5rem',
+          gap: userRole === 'admin' ? '2.5rem' : '0', // Adjust gap based on buttons shown
           justifyContent: 'center',
           flexWrap: 'wrap',
           padding: '0 1rem'
         }}>
-          <button
-            style={{
-              border: 'none',
-              padding: '1.3rem 4rem',
-              borderRadius: '12px',
-              fontSize: '1.2rem',
-              fontWeight: '600',
-              cursor: 'pointer',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.75rem',
-              minWidth: '350px',
-              justifyContent: 'center',
-              background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
-              color: 'white',
-              boxShadow: '0 6px 20px rgba(59, 130, 246, 0.3)',
-              transition: 'all 0.3s ease',
-              boxSizing: 'border-box'
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.transform = 'translateY(-3px) scale(1.05)';
-              e.target.style.boxShadow = '0 8px 25px rgba(59, 130, 246, 0.4)';
-              e.target.style.background = 'linear-gradient(135deg, #1d4ed8, #1e40af)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.transform = 'translateY(0) scale(1)';
-              e.target.style.boxShadow = '0 6px 20px rgba(59, 130, 246, 0.3)';
-              e.target.style.background = 'linear-gradient(135deg, #3b82f6, #1d4ed8)';
-            }}
-            onClick={() => setShowModal(true)}
-          >
-            <span style={{ fontSize: '1.4rem', fontWeight: 'bold' }}>+</span>
-            Add New Product
-          </button>
+          {/* CONDITIONALLY SHOW ADD PRODUCT BUTTON ONLY FOR ADMIN */}
+          {userRole === 'admin' && (
+            <button
+              style={{
+                border: 'none',
+                padding: '1.3rem 4rem',
+                borderRadius: '12px',
+                fontSize: '1.2rem',
+                fontWeight: '600',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.75rem',
+                minWidth: '350px',
+                justifyContent: 'center',
+                background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
+                color: 'white',
+                boxShadow: '0 6px 20px rgba(59, 130, 246, 0.3)',
+                transition: 'all 0.3s ease',
+                boxSizing: 'border-box'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.transform = 'translateY(-3px) scale(1.05)';
+                e.target.style.boxShadow = '0 8px 25px rgba(59, 130, 246, 0.4)';
+                e.target.style.background = 'linear-gradient(135deg, #1d4ed8, #1e40af)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transform = 'translateY(0) scale(1)';
+                e.target.style.boxShadow = '0 6px 20px rgba(59, 130, 246, 0.3)';
+                e.target.style.background = 'linear-gradient(135deg, #3b82f6, #1d4ed8)';
+              }}
+              onClick={() => setShowModal(true)}
+            >
+              <span style={{ fontSize: '1.4rem', fontWeight: 'bold' }}>+</span>
+              Add New Product
+            </button>
+          )}
           
+          {/* PLACE ORDER BUTTON - ALWAYS VISIBLE FOR BOTH ROLES */}
           <button
             style={{
               border: 'none',
@@ -479,11 +488,14 @@ Stock has been automatically updated.`);
         </div>
       </div>
 
-      <AddProductModal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
-        onSubmit={handleAddProduct}
-      />
+      {/* CONDITIONALLY RENDER ADD PRODUCT MODAL ONLY FOR ADMIN */}
+      {userRole === 'admin' && (
+        <AddProductModal
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+          onSubmit={handleAddProduct}
+        />
+      )}
 
       <PlaceOrderModal
         isOpen={showOrderModal}

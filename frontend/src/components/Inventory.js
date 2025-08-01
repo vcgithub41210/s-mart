@@ -121,6 +121,12 @@ const Inventory = ({ userRole, isConnected }) => {
   // Modified to use backend API with correct field names
   const handleAddProduct = async (productData) => {
     try {
+      // Check if user is admin before allowing product creation
+      if (userRole !== 'admin') {
+        alert('Only administrators can add new products.');
+        return;
+      }
+
       // Transform frontend data to match your MongoDB schema
       const newProductData = {
         productId: productData.skuCode || `PROD-${Date.now()}`,
@@ -143,27 +149,26 @@ const Inventory = ({ userRole, isConnected }) => {
 
   // SIMPLIFIED: Handle stock update only
   // FIXED: Handle stock update with proper error handling
-const handleEditStock = async (newStockQuantity) => {
-  try {
-    console.log('Updating stock for product:', selectedProduct.id, 'New stock:', newStockQuantity);
-    
-    // Use the updateStock API with direct stock value
-    const response = await productService.updateStock(selectedProduct.id, { 
-      stockAvailable: newStockQuantity 
-    });
-    
-    console.log('Stock update response:', response);
-    
-    await loadProducts(); // Refresh the list
-    setShowEditModal(false);
-    setSelectedProduct(null);
-    alert(`Stock updated successfully! New stock: ${newStockQuantity}`);
-  } catch (err) {
-    console.error('Stock update error:', err);
-    alert('Failed to update stock: ' + (err.response?.data?.message || err.message));
-  }
-};
-
+  const handleEditStock = async (newStockQuantity) => {
+    try {
+      console.log('Updating stock for product:', selectedProduct.id, 'New stock:', newStockQuantity);
+      
+      // Use the updateStock API with direct stock value
+      const response = await productService.updateStock(selectedProduct.id, { 
+        stockAvailable: newStockQuantity 
+      });
+      
+      console.log('Stock update response:', response);
+      
+      await loadProducts(); // Refresh the list
+      setShowEditModal(false);
+      setSelectedProduct(null);
+      alert(`Stock updated successfully! New stock: ${newStockQuantity}`);
+    } catch (err) {
+      console.error('Stock update error:', err);
+      alert('Failed to update stock: ' + (err.response?.data?.message || err.message));
+    }
+  };
 
   // Modified to use backend API
   const handleDeleteItem = async (itemId) => {
@@ -296,15 +301,16 @@ const handleEditStock = async (newStockQuantity) => {
               </select>
             </div>
 
-            <button
-              className="btn-primary add-item-btn"
-              onClick={() => setShowModal(true)}
-            >
-              <span className="btn-icon">+</span>
-              Add New Item
-            </button>
-
-            
+            {/* CONDITIONALLY SHOW ADD BUTTON ONLY FOR ADMIN */}
+            {userRole === 'admin' && (
+              <button
+                className="btn-primary add-item-btn"
+                onClick={() => setShowModal(true)}
+              >
+                <span className="btn-icon">+</span>
+                Add New Item
+              </button>
+            )}
           </div>
         </div>
 
@@ -390,23 +396,29 @@ const handleEditStock = async (newStockQuantity) => {
                     Clear Filters
                   </button>
                 ) : (
-                  <button
-                    className="btn-primary"
-                    onClick={() => setShowModal(true)}
-                  >
-                    Add First Product
-                  </button>
+                  /* CONDITIONALLY SHOW ADD FIRST PRODUCT BUTTON ONLY FOR ADMIN */
+                  userRole === 'admin' && (
+                    <button
+                      className="btn-primary"
+                      onClick={() => setShowModal(true)}
+                    >
+                      Add First Product
+                    </button>
+                  )
                 )}
               </div>
             )}
           </div>
         </div>
 
-        <AddProductModal
-          isOpen={showModal}
-          onClose={() => setShowModal(false)}
-          onSubmit={handleAddProduct}
-        />
+        {/* CONDITIONALLY RENDER ADD PRODUCT MODAL ONLY FOR ADMIN */}
+        {userRole === 'admin' && (
+          <AddProductModal
+            isOpen={showModal}
+            onClose={() => setShowModal(false)}
+            onSubmit={handleAddProduct}
+          />
+        )}
 
         <EditProductModal
           isOpen={showEditModal}
