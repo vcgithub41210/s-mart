@@ -8,7 +8,7 @@ const generateToken = (id) => {
   });
 };
 
-// Register new user (Admin only)
+// Register new user (Admin only0)
 export const register = async (req, res) => {
   try {
     const { username, email, password, fullName, role } = req.body;

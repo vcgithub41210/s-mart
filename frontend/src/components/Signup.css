@@ -3,16 +3,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #5959ec 0%, #7e79fe 100%);
   padding: 20px;
   font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  width:60%;
 }
 
 .signup-content {
   display: flex;
   max-width: 1400px;
   width: 100%;
-  background: white;
+  background:rgb(203, 79, 79);
   border-radius: 20px;
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
   overflow: hidden;
@@ -169,7 +170,7 @@
 .signup-form-container h2 {
   text-align: center;
   margin-bottom: 35px;
-  color: #1f2937;
+  color: #124893;
   font-size: 2.3rem;
   font-weight: 700;
   background: linear-gradient(135deg, #1e40af 0%, #3730a3 100%);
@@ -180,6 +181,7 @@
 
 .signup-form {
   width: 100%;
+  color:white;
 }
 
 .form-group {
@@ -190,7 +192,7 @@
 .form-group label {
   display: block;
   margin-bottom: 8px;
-  color: #374151;
+  color: #d5d8de;
   font-weight: 600;
   font-size: 0.95rem;
   transition: color 0.3s ease;
@@ -206,7 +208,7 @@
   transition: all 0.3s ease;
   box-sizing: border-box;
   background: #ffffff;
-  color: #1f2937 !important;
+  color: #1d2a3a !important;
   font-family: inherit;
   line-height: 1.5;
   box-shadow: 0 2px 4px rgba(0,0,0,0.02);
