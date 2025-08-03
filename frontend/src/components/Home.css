@@ -4,8 +4,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 2rem;
+  padding: 1rem; /* Reduced from 2rem to 1rem */
+  border-radius: 12px;
+  gap: 1rem; /* Optional: adds consistent, small spacing between children */
 }
+
+
 
 .hero-section {
   text-align: center;
@@ -19,27 +23,50 @@
   margin-bottom: 1rem;
   font-weight: 700;
   text-shadow: none;
-  background: linear-gradient(90deg, #39373a, #171617);
+
+  /* Matching gradient background */
+  background: linear-gradient(-45deg, #1e3a8a, #2563eb, #3b82f6, #4338ca, #2563eb, #1e3a8a);
+  background-size: 400% 400%;
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  background-clip: text;
+
+  animation: gradientShift 15s ease infinite; /* Match App animation */
 }
+
+/* Reuse or move this keyframe globally */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+
 
 .hero-subtitle {
   font-size: 1.2rem;
   margin-bottom: 3rem;
-  opacity: 0.8;
   font-weight: 300;
-  background: linear-gradient(90deg, #4d4c4e, #4f4e50);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  opacity: 0.9;
+
+  /* Use solid dark text instead of gradient */
+  color: #1f2937; /* Tailwind's gray-800 for a nice dark gray */
+
+  /* Optional new font */
+  font-family: 'Inter', 'Segoe UI', 'Helvetica Neue', sans-serif;
 }
+
 
 .main-content {
   display: flex;
   gap: 3rem;
-  margin: 3rem auto;
+  margin: 2rem auto;
   max-width: 1200px;
   width: 100%;
   justify-content: center;
@@ -50,13 +77,16 @@
   flex: 1;
   min-width: 450px;
   max-width: 550px;
+  height: 500px; /* adjust based on your design */
   background: rgb(255, 255, 255);
   border-radius: 16px;
   padding: 2rem;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  border: 2px solid #5493f7c2; /* Blue border outline */
+  border: 2px solid #5493f7c2;
   backdrop-filter: blur(10px);
+  overflow: auto;
 }
+
 
 
 

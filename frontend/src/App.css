@@ -1,4 +1,7 @@
-* {
+/* Reset and base styles */
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -7,8 +10,8 @@
 html, body {
   height: 100%;
   overflow-x: hidden;
-  margin: 0; /* Ensure no default margins */
-  padding: 0; /* Ensure no default padding */
+  margin: 0;
+  padding: 0;
 }
 
 body {
@@ -16,15 +19,28 @@ body {
   color: #333;
 }
 
+/* Ensure root div fills screen */
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* App container */
 .App {
   min-height: 100vh;
+  height: 100%;
   position: relative;
-  
-  /* Blue Animated Gradient Background - Similar to navbar colors */
-  background: linear-gradient(-45deg, #1e3a8a, #2563eb, #3b82f6, #60a5fa, #93c5fd, #bfdbfe);
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  /* Adjusted darker blue gradient */
+  background: linear-gradient(-45deg, #1e3a8a, #2563eb, #3b82f6, #4338ca, #2563eb, #1e3a8a);
   background-size: 400% 400%;
   animation: gradientShift 15s ease infinite;
 }
+
+
 
 /* Gradient Animation */
 @keyframes gradientShift {
@@ -39,21 +55,20 @@ body {
   }
 }
 
-/* Make main-content start immediately after navbar with white background */
+/* Main content area */
 .main-content {
-  margin-top: 60px; /* Reduced from 70px to 60px */
+  margin-top: 60px;
   padding: 20px;
   max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
   position: relative;
   z-index: 1;
-  
-  /* WHITE BACKGROUND - This covers the blue gradient */
-  background: rgb(255, 255, 255);
+
+  background: transparent;
   border-radius: 0;
-  min-height: calc(100vh - 60px); /* Adjusted to match margin-top */
-  margin-bottom: 0; /* Ensure no bottom margin */
+  min-height: calc(100vh - 60px);
+  margin-bottom: 0;
 }
 
 /* Remove the semi-transparent overlay */
@@ -66,13 +81,19 @@ body {
   box-shadow: none;
 }
 
+/* Footer and similar elements - ensure no extra space */
+footer {
+  margin: 0;
+  padding: 0;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .main-content {
     padding: 15px;
-    margin-top: 70px; /* Reduced from 80px to 70px */
+    margin-top: 70px;
     margin-left: 0;
     margin-right: 0;
-    min-height: calc(100vh - 70px); /* Adjusted to match margin-top */
+    min-height: calc(100vh - 70px);
   }
 }
