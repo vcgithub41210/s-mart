@@ -2,6 +2,7 @@
   padding: 2rem;
   background: #f8fafc;
   min-height: 100vh;
+  border-radius: 12px;
 }
 
 .dashboard-header {
@@ -9,6 +10,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
+  border-radius: 12px;
 }
 
 .dashboard-header h1 {

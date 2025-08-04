@@ -2,6 +2,7 @@
   min-height: 100vh;
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   padding: 0;
+  border-radius: 12px;
 }
 
 .orders-container {
@@ -10,6 +11,8 @@
   min-height: 100vh;
   background: white;
   margin: 0;
+  
+  border-radius: 12px;
 }
 
 .orders-header {
@@ -22,6 +25,7 @@
   justify-content: space-between;
   align-items: center;
   gap: 2rem;
+  border-radius: 12px;
 }
 
 .header-title {

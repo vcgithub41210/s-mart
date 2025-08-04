@@ -461,7 +461,10 @@ const Dashboard = ({ isConnected }) => {
                   </span>
                   <div className="activity-content">
                     <p className="activity-title">
-                      Order #{order.id} - {order.customerName}
+                      <p className="activity-title">
+  Order #{order.id.substring(0, 5)} - {order.customerName}
+</p>
+
                     </p>
                     <div className="activity-details">
                       <span className="activity-amount">{formatCurrency(order.totalAmount)}</span>

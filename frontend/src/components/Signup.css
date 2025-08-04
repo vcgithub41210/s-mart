@@ -3,10 +3,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #5959ec 0%, #7e79fe 100%);
+  background: transparent;
   padding: 20px;
   font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  width:60%;
+  width:40%;
 }
 
 .signup-content {
@@ -444,8 +444,9 @@
 
 .back-to-login-btn {
   width: 100%;
+  margin-top: 15px;
   padding: 16px;
-  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  background: linear-gradient(135deg, #050d19 0%, #12214d 100%);
   color: white;
   border: none;
   border-radius: 12px;
@@ -456,7 +457,7 @@
 }
 
 .back-to-login-btn:hover {
-  background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+  background: linear-gradient(135deg, #4324de 0%, #6d30c3 100%);
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
 }
