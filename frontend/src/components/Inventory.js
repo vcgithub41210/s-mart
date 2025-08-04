@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './Inventory.css';
 import AddProductModal from './AddProductModal';
 import EditProductModal from './EditProductModal';
+import DeleteModal from './DeleteModal';
 import productService from '../services/productService';
 
 const Inventory = ({ userRole, isConnected }) => {
@@ -17,6 +18,10 @@ const Inventory = ({ userRole, isConnected }) => {
 
   // Replace static data with dynamic state
   const [inventoryItems, setInventoryItems] = useState([]);
+
+  // New state for delete modal
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [productToDelete, setProductToDelete] = useState(null);
 
   // Load products when component mounts or connection status changes
   useEffect(() => {
@@ -170,18 +175,31 @@ const Inventory = ({ userRole, isConnected }) => {
     }
   };
 
-  // Modified to use backend API
-  const handleDeleteItem = async (itemId) => {
-    if (window.confirm('Are you sure you want to delete this item?')) {
-      try {
-        await productService.deleteProduct(itemId);
-        await loadProducts(); // Refresh the list
-        alert('Item deleted successfully!');
-      } catch (err) {
-        alert('Failed to delete item: ' + err.message);
-        console.error('Error deleting product:', err);
-      }
+  // Updated delete function to use modal
+  const promptDeleteItem = (item) => {
+    setProductToDelete(item);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDeleteItem = async () => {
+    if (!productToDelete) return;
+
+    try {
+      await productService.deleteProduct(productToDelete.id);
+      await loadProducts(); // Refresh the list
+      alert('Product deleted successfully!');
+    } catch (err) {
+      alert('Failed to delete product: ' + err.message);
+      console.error('Error deleting product:', err);
+    } finally {
+      setShowDeleteModal(false);
+      setProductToDelete(null);
     }
+  };
+
+  const cancelDeleteItem = () => {
+    setShowDeleteModal(false);
+    setProductToDelete(null);
   };
 
   // Handle edit button click - now only for stock editing
@@ -364,7 +382,7 @@ const Inventory = ({ userRole, isConnected }) => {
                       </button>
                       <button
                         className="action-btn delete-btn"
-                        onClick={() => handleDeleteItem(item.id)}
+                        onClick={() => promptDeleteItem(item)}
                         title="Delete Item"
                       >
                         🗑️
@@ -428,6 +446,14 @@ const Inventory = ({ userRole, isConnected }) => {
           }}
           onSubmit={handleEditStock}
           product={selectedProduct}
+        />
+
+        {/* Delete Modal */}
+        <DeleteModal
+          isOpen={showDeleteModal}
+          productData={productToDelete}
+          onConfirm={confirmDeleteItem}
+          onCancel={cancelDeleteItem}
         />
       </div>
     </div>

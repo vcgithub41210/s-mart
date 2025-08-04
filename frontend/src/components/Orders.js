@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import './Orders.css';
 import BillModal from './BillModal';
 import orderService from '../services/orderService';
+import ConfirmModal from './ConfirmModal';
+import CancelModal from './CancelModal';
 
 const Orders = ({ isConnected }) => {
   const [filter, setFilter] = useState('all');
@@ -16,6 +18,13 @@ const Orders = ({ isConnected }) => {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // New state to manage confirmation modal for completing order
+  const [confirmCompleteOrderId, setConfirmCompleteOrderId] = useState(null);
+
+  // New state to manage cancel modal
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [orderToCancel, setOrderToCancel] = useState(null);
 
   // Load orders from database
   const loadOrders = async () => {
@@ -84,32 +93,57 @@ const Orders = ({ isConnected }) => {
     return order.status === filter;
   });
 
-  const handleCompleteOrder = async (orderId) => {
-    if (window.confirm('Are you sure you want to mark this order as completed?')) {
-      try {
-        console.log('Completing order with ID:', orderId);
-        await orderService.updateOrderStatus(orderId, 'completed');
-        await loadOrders(); // Refresh orders
-        alert('Order marked as completed!');
-      } catch (err) {
-        alert('Failed to update order: ' + err.message);
-        console.error('Error updating order:', err);
-      }
+  // Show confirm modal instead of window.confirm
+  const promptCompleteOrder = (orderId) => {
+    setConfirmCompleteOrderId(orderId);
+  };
+
+  const confirmCompleteOrder = async () => {
+    if (!confirmCompleteOrderId) return;
+
+    try {
+      console.log('Completing order with ID:', confirmCompleteOrderId);
+      await orderService.updateOrderStatus(confirmCompleteOrderId, 'completed');
+      await loadOrders(); // Refresh orders
+      alert('Order marked as completed!');
+    } catch (err) {
+      alert('Failed to update order: ' + err.message);
+      console.error('Error updating order:', err);
+    } finally {
+      setConfirmCompleteOrderId(null);
     }
   };
 
-  const handleCancelOrder = async (orderId) => {
-    if (window.confirm('Are you sure you want to cancel this order? Stock will be restored.')) {
-      try {
-        console.log('Cancelling order with ID:', orderId);
-        await orderService.cancelOrder(orderId);
-        await loadOrders(); // Refresh orders
-        alert('Order cancelled successfully! Stock has been restored.');
-      } catch (err) {
-        alert('Failed to cancel order: ' + err.message);
-        console.error('Error cancelling order:', err);
-      }
+  const cancelCompleteOrder = () => {
+    setConfirmCompleteOrderId(null);
+  };
+
+  // Updated cancel order function to use modal
+  const promptCancelOrder = (order) => {
+    setOrderToCancel(order);
+    setShowCancelModal(true);
+  };
+
+  const confirmCancelOrder = async () => {
+    if (!orderToCancel) return;
+
+    try {
+      console.log('Cancelling order with ID:', orderToCancel.orderId);
+      await orderService.cancelOrder(orderToCancel.orderId);
+      await loadOrders(); // Refresh orders
+      alert('Order cancelled successfully! Stock has been restored.');
+    } catch (err) {
+      alert('Failed to cancel order: ' + err.message);
+      console.error('Error cancelling order:', err);
+    } finally {
+      setShowCancelModal(false);
+      setOrderToCancel(null);
     }
+  };
+
+  const cancelCancelOrder = () => {
+    setShowCancelModal(false);
+    setOrderToCancel(null);
   };
 
   const handleGenerateBill = (order) => {
@@ -316,13 +350,13 @@ const Orders = ({ isConnected }) => {
                         <div className="pending-actions">
                           <button
                             className="complete-btn"
-                            onClick={() => handleCompleteOrder(order.orderId)}
+                            onClick={() => promptCompleteOrder(order.orderId)}
                           >
                             ✅ Mark as Completed
                           </button>
                           <button
                             className="cancel-btn"
-                            onClick={() => handleCancelOrder(order.orderId)}
+                            onClick={() => promptCancelOrder(order)}
                           >
                             ❌ Cancel Order
                           </button>
@@ -358,6 +392,23 @@ const Orders = ({ isConnected }) => {
           isOpen={showBillModal}
           onClose={() => setShowBillModal(false)}
           order={selectedOrder}
+        />
+
+        {/* Custom Confirm Modal for Completing Order */}
+        <ConfirmModal
+          isOpen={!!confirmCompleteOrderId}
+          title="Confirm Completion"
+          message="Are you sure you want to mark this order as completed?"
+          onConfirm={confirmCompleteOrder}
+          onCancel={cancelCompleteOrder}
+        />
+
+        {/* Cancel Modal */}
+        <CancelModal
+          isOpen={showCancelModal}
+          orderData={orderToCancel}
+          onConfirm={confirmCancelOrder}
+          onCancel={cancelCancelOrder}
         />
       </div>
     </div>
