@@ -21,7 +21,7 @@ connectDB();
 // Middleware
 app.use(helmet());
 app.use(cors({
-  origin: ['https://s-mart-1234.vercel.app/'],
+  origin: ['https://s-mart-1234.vercel.app'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
 }));
