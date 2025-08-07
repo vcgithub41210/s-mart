@@ -50,7 +50,8 @@ const Signup = ({ onSignupSubmit, onBackToLogin }) => {
 
     try {
       // Call API to create account
-      const response = await fetch('http://localhost:5000/api/auth/register', {
+
+      const response = await fetch('https://s-mart-o9lm.onrender.com/api', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
